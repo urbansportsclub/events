@@ -1,5 +1,9 @@
-# events
-Service to produce and consume events using kafka stream processing
+# OneFit Events
+
+[![Build Status](https://travis-ci.com/onefit/base.svg?token=yyNHsRRTPoEN35wt46sb&branch=master)](https://travis-ci.com/onefit/base)
+[![StyleCI](https://styleci.io/repos/221408130/shield?branch=master)](https://styleci.io/repos/221408130)
+
+This package contains services to produce and consume events using kafka stream processing
 
 ## Configuration
 | Param | Description | Type | Default |
