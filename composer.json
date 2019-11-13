@@ -1,6 +1,6 @@
 {
     "name": "onefit/events",
-    "description": "Event sourcing with kafka",
+    "description": "Events handling with kafka",
     "type": "library",
     "require": {
         "php": ">=7.1",
