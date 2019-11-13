@@ -2,15 +2,14 @@
 
 namespace Tests\Unit\Services;
 
-use OneFit\Events\Services\ConsumerService;
-use PHPUnit\Framework\MockObject\MockClass;
-use PHPUnit\Framework\TestCase;
 use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
+use PHPUnit\Framework\TestCase;
+use OneFit\Events\Services\ConsumerService;
+use PHPUnit\Framework\MockObject\MockClass;
 
 /**
- * Class ConsumerServiceTest
- * @package Tests\Unit\Services
+ * Class ConsumerServiceTest.
  */
 class ConsumerServiceTest extends TestCase
 {
@@ -76,7 +75,8 @@ class ConsumerServiceTest extends TestCase
     /** @test */
     public function can_set_consumer_cb()
     {
-        $consumeCb = function () {};
+        $consumeCb = function () {
+        };
 
         $this->configurationMock
             ->expects($this->once())
