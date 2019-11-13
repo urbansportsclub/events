@@ -2,16 +2,15 @@
 
 namespace Tests\Unit\Services;
 
-use OneFit\Events\Services\ProducerService;
-use PHPUnit\Framework\MockObject\MockClass;
-use PHPUnit\Framework\TestCase;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
+use PHPUnit\Framework\TestCase;
+use OneFit\Events\Services\ProducerService;
+use PHPUnit\Framework\MockObject\MockClass;
 
 /**
- * Class ProducerServiceTest
- * @package Tests\Unit\Services
+ * Class ProducerServiceTest.
  */
 class ProducerServiceTest extends TestCase
 {
