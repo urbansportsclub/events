@@ -6,8 +6,7 @@ use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
 
 /**
- * Class ConsumerService
- * @package OneFit\Events\Services
+ * Class ConsumerService.
  */
 class ConsumerService
 {
@@ -24,7 +23,7 @@ class ConsumerService
     /**
      * ConsumerService constructor.
      * @param KafkaConsumer $consumer
-     * @param Conf $configuration
+     * @param Conf          $configuration
      */
     public function __construct(KafkaConsumer $consumer, Conf $configuration)
     {
@@ -35,9 +34,9 @@ class ConsumerService
     }
 
     /**
-     * @param string $groupId
-     * @param callable $consumeCb
-     * @param string $topic
+     * @param  string             $groupId
+     * @param  callable           $consumeCb
+     * @param  string             $topic
      * @throws \RdKafka\Exception
      */
     public function consume(string $groupId, callable $consumeCb, string $topic): void
@@ -55,13 +54,13 @@ class ConsumerService
             $message = $this->consumer->consume($timeout);
             switch ($message->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    echo "Got message: {$message->payload} from {$message->topic_name}" . PHP_EOL;
+                    echo "Got message: {$message->payload} from {$message->topic_name}".PHP_EOL;
                     break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-                    echo 'No more messages; will wait for more' . PHP_EOL;
+                    echo 'No more messages; will wait for more'.PHP_EOL;
                     break;
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
-                    echo 'Timed out' . PHP_EOL;
+                    echo 'Timed out'.PHP_EOL;
                     break;
                 default:
                     throw new \Exception($message->errstr(), $message->err);

@@ -2,16 +2,15 @@
 
 namespace OneFit\Events;
 
+use RdKafka\Conf;
+use RdKafka\Producer;
+use RdKafka\KafkaConsumer;
 use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
-use RdKafka\Conf;
-use RdKafka\KafkaConsumer;
-use RdKafka\Producer;
 
 /**
- * Class EventsServiceProvider
- * @package OneFit\Events
+ * Class EventsServiceProvider.
  */
 class EventsServiceProvider extends ServiceProvider
 {
