@@ -50,7 +50,7 @@ class ConsumerService
     }
 
     /**
-     * @param array $topics
+     * @param  array              $topics
      * @throws \RdKafka\Exception
      */
     public function subscribe(array $topics): void
