@@ -6,8 +6,7 @@ use RdKafka\Conf;
 use RdKafka\Producer;
 
 /**
- * Class ProducerService
- * @package OneFit\Events\Services
+ * Class ProducerService.
  */
 class ProducerService
 {
@@ -23,7 +22,7 @@ class ProducerService
 
     /**
      * ProducerService constructor.
-     * @param Conf $configuration
+     * @param Conf     $configuration
      * @param Producer $producer
      */
     public function __construct(Producer $producer, Conf $configuration)
