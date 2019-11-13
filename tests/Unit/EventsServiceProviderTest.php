@@ -2,16 +2,15 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Contracts\Foundation\Application;
+use PHPUnit\Framework\TestCase;
 use OneFit\Events\EventsServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Contracts\Foundation\Application;
 
 /**
- * Class EventsServiceProviderTest
- * @package Tests\Unit
+ * Class EventsServiceProviderTest.
  */
 class EventsServiceProviderTest extends TestCase
 {
