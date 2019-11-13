@@ -1,0 +1,18 @@
+preset: laravel
+
+risky: true
+
+enabled:
+  - length_ordered_imports
+  - return_type_declaration
+  - new_with_braces
+  - phpdoc_align
+  - phpdoc_order
+
+disabled:
+  - alpha_ordered_imports
+  - simplified_null_return
+
+finder:
+  name:
+    - "*.php"

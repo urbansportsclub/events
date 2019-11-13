@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         verbose="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Feature Tests">
+            <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
+
+        <testsuite name="Unit Tests">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+    <groups>
+        <exclude>
+            <group>integration</group>
+        </exclude>
+    </groups>
+    <php>
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_HOST" value="localhost" />
+        <env name="DB_DATABASE" value="base_test"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value=""/>
+        <env name="JWT_PUBLIC_KEY_PATH" value="tests/Unit/Authentication/stubs/public.key" />
+        <env name="JWT_PRIVATE_KEY_PATH" value="tests/Unit/Authentication/stubs/private.key"/>
+        <env name="MC_LIST_NL_NL" value="TST" />
+        <env name="MC_LIST_NL_INT" value="TST" />
+        <env name="MC_LIST_DE_DE" value="TST" />
+        <env name="MC_LIST_DE_INT" value="TST" />
+        <env name="MC_LEADS_NL_NL" value="TST" />
+        <env name="MC_LEADS_NL_INT" value="TST" />
+        <env name="MC_LEADS_DE_DE" value="TST" />
+        <env name="MC_LEADS_DE_INT" value="TST" />
+        <env name="MC_DISCOUNT_NL_NL" value="TST" />
+        <env name="MC_DISCOUNT_NL_INT" value="TST" />
+        <env name="MC_DISCOUNT_DE_DE" value="TST" />
+        <env name="MC_DISCOUNT_DE_INT" value="TST" />
+        <env name="MAILCHIMP_V2_NL" value="TST" />
+        <env name="MAILCHIMP_V2_EN" value="TST" />
+        <env name="MAILCHIMP_V2_DE" value="TST" />
+        <env name="MAILCHIMP_V2_ES" value="TST" />
+        <env name="ADYEN_USERNAME" value="" />
+        <env name="ADYEN_PASSWORD" value="" />
+        <env name="ADYEN_MERCHANT" value="" />
+        <env name="ADYEN_SKIN_CODE" value="" />
+        <env name="ADYEN_HMAC" value="" />
+        <env name="ADYEN_ENVIRONMENT" value="test" />
+        <env name="VIRTUAGYM_API_KEY" value="api_key" />
+        <env name="VIRTUAGYM_CLUB_SECRET" value="club_secret" />
+        <env name="MINDBODY_SOURCE_USERNAME" value="TST" />
+        <env name="MINDBODY_SOURCE_PASSWORD" value="TST"/>
+        <ini name="memory_limit" value="512M" />
+        <env name="EVERSPORTS_PERSONAL_TOKEN" value="1212"/>
+        <env name="MONGO_DSN" value="mongodb://localhost"/>
+        <env name="MONGO_DATABASE" value="test_one-nosql"/>
+    </php>
+</phpunit>
