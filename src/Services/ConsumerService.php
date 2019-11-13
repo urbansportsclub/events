@@ -34,39 +34,36 @@ class ConsumerService
     }
 
     /**
-     * @param  string             $groupId
-     * @param  callable           $consumeCb
-     * @param  string             $topic
+     * @param string $groupId
+     */
+    public function setGroupId(string $groupId): void
+    {
+        $this->configuration->set('group.id', $groupId);
+    }
+
+    /**
+     * @param callable $consumeCb
+     */
+    public function setConsumeCb(callable $consumeCb): void
+    {
+        $this->configuration->setConsumeCb($consumeCb);
+    }
+
+    /**
+     * @param array $topics
      * @throws \RdKafka\Exception
      */
-    public function consume(string $groupId, callable $consumeCb, string $topic): void
+    public function subscribe(array $topics): void
     {
-        // Set the group id. This is required when storing offsets on the broker
-        $this->configuration->set('group.id', $groupId);
+        $this->consumer->subscribe($topics);
+    }
 
-        // Set consume callback to use with poll
-        $this->configuration->setConsumeCb($consumeCb);
-
-        $this->consumer->subscribe([$topic]);
-        $timeout = env('CONSUME_TIMEOUT_MS', 120000);
-
-        while (true) {
-            $message = $this->consumer->consume($timeout);
-            switch ($message->err) {
-                case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    echo "Got message: {$message->payload} from {$message->topic_name}".PHP_EOL;
-                    break;
-                case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-                    echo 'No more messages; will wait for more'.PHP_EOL;
-                    break;
-                case RD_KAFKA_RESP_ERR__TIMED_OUT:
-                    echo 'Timed out'.PHP_EOL;
-                    break;
-                default:
-                    throw new \Exception($message->errstr(), $message->err);
-                    break;
-            }
-        }
+    /**
+     * @throws \RdKafka\Exception
+     */
+    public function consume(): void
+    {
+        $this->consumer->consume(env('CONSUME_TIMEOUT_MS', 120000));
     }
 
     /**
