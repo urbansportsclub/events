@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use OneFit\Events\Models\Message;
+use OneFit\Events\Models\Topic;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
@@ -30,6 +32,11 @@ class ProducerServiceTest extends TestCase
     private $topicMock;
 
     /**
+     * @var Message|MockClass
+     */
+    private $messageMock;
+
+    /**
      * @var ProducerService
      */
     private $producerService;
@@ -42,6 +49,7 @@ class ProducerServiceTest extends TestCase
         $this->producerMock = $this->createMock(Producer::class);
         $this->configurationMock = $this->createMock(Conf::class);
         $this->topicMock = $this->createMock(ProducerTopic::class);
+        $this->messageMock = $this->createMock(Message::class);
 
         $this->producerService = new ProducerService($this->producerMock, $this->configurationMock);
 
@@ -72,12 +80,6 @@ class ProducerServiceTest extends TestCase
     /** @test */
     public function can_call_produce()
     {
-        $topic = 'friend_request';
-        $payload = [
-            'action' => 'received_friend_request',
-            'friend_id' => 5,
-        ];
-
         $this->producerMock
             ->expects($this->once())
             ->method('newTopic')
@@ -86,7 +88,7 @@ class ProducerServiceTest extends TestCase
         $this->topicMock
             ->expects($this->once())
             ->method('produce')
-            ->with(RD_KAFKA_PARTITION_UA, 0, json_encode($payload));
+            ->with(RD_KAFKA_PARTITION_UA, 0, json_encode($this->messageMock));
 
         $this->producerMock
             ->expects($this->once())
@@ -99,18 +101,12 @@ class ProducerServiceTest extends TestCase
             ->with(10000)
             ->willReturn(RD_KAFKA_RESP_ERR_NO_ERROR);
 
-        $this->producerService->produce($topic, json_encode($payload));
+        $this->producerService->produce(Topic::RESOURCE_CREATED, $this->messageMock);
     }
 
     /** @test */
     public function will_try_to_flush_multiple_times()
     {
-        $topic = 'friend_request';
-        $payload = [
-            'action' => 'received_friend_request',
-            'friend_id' => 5,
-        ];
-
         $this->producerMock
             ->expects($this->once())
             ->method('newTopic')
@@ -119,7 +115,7 @@ class ProducerServiceTest extends TestCase
         $this->topicMock
             ->expects($this->once())
             ->method('produce')
-            ->with(RD_KAFKA_PARTITION_UA, 0, json_encode($payload));
+            ->with(RD_KAFKA_PARTITION_UA, 0, json_encode($this->messageMock));
 
         $this->producerMock
             ->expects($this->once())
@@ -135,6 +131,6 @@ class ProducerServiceTest extends TestCase
                 RD_KAFKA_RESP_ERR_NO_ERROR
             );
 
-        $this->producerService->produce($topic, json_encode($payload));
+        $this->producerService->produce(Topic::RESOURCE_CREATED, $this->messageMock);
     }
 }

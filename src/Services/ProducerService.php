@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Services;
 
+use OneFit\Events\Models\Message;
 use RdKafka\Conf;
 use RdKafka\Producer;
 
@@ -35,12 +36,12 @@ class ProducerService
 
     /**
      * @param string $topic
-     * @param string $payload
+     * @param Message $message
      */
-    public function produce(string $topic, string $payload): void
+    public function produce(string $topic, Message $message): void
     {
         $topic = $this->producer->newTopic($topic);
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, $payload);
+        $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($message));
         $this->producer->poll(0);
         $this->flushProducer(env('FLUSH_RETRIES', 10));
     }

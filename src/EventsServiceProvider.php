@@ -2,6 +2,10 @@
 
 namespace OneFit\Events;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Event;
+use OneFit\Events\Models\Message;
+use OneFit\Events\Models\Topic;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -20,6 +24,22 @@ class EventsServiceProvider extends ServiceProvider
      * @var bool
      */
     protected $defer = true;
+
+    /**
+     * Register wildcard events listener.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        parent::boot();
+
+        Event::listen('*', function ($event, array $payload) {
+            $message = $this->app->make(Message::class, ['event' => $event, ['payload' => $payload]]);
+            $producer = $this->app->make(ProducerService::class);
+            $producer->produce(Topic::GLOBAL_EVENT, $message);
+        });
+    }
 
     /**
      * Register bindings in the container.
