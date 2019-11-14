@@ -3,12 +3,11 @@
 namespace Tests\Unit\Models;
 
 use JsonSerializable;
-use OneFit\Events\Models\Message;
 use PHPUnit\Framework\TestCase;
+use OneFit\Events\Models\Message;
 
 /**
- * Class MessageTest
- * @package Tests\Unit\Models
+ * Class MessageTest.
  */
 class MessageTest extends TestCase
 {

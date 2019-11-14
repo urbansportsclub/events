@@ -2,13 +2,12 @@
 
 namespace OneFit\Events;
 
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Facades\Event;
-use OneFit\Events\Models\Message;
-use OneFit\Events\Models\Topic;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
+use OneFit\Events\Models\Topic;
+use OneFit\Events\Models\Message;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
