@@ -3,8 +3,7 @@
 namespace OneFit\Events\Models;
 
 /**
- * Class Topic
- * @package OneFit\Events\Models
+ * Class Topic.
  */
 abstract class Topic
 {

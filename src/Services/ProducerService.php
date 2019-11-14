@@ -2,9 +2,9 @@
 
 namespace OneFit\Events\Services;
 
-use OneFit\Events\Models\Message;
 use RdKafka\Conf;
 use RdKafka\Producer;
+use OneFit\Events\Models\Message;
 
 /**
  * Class ProducerService.
@@ -35,7 +35,7 @@ class ProducerService
     }
 
     /**
-     * @param string $topic
+     * @param string  $topic
      * @param Message $message
      */
     public function produce(string $topic, Message $message): void
