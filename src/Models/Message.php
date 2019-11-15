@@ -12,6 +12,11 @@ class Message implements JsonSerializable
     private $event;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * @var array
      */
     private $payload;
@@ -19,11 +24,13 @@ class Message implements JsonSerializable
     /**
      * Message constructor.
      * @param string $event
-     * @param array  $payload
+     * @param string $type
+     * @param array $payload
      */
-    public function __construct(string $event, array $payload)
+    public function __construct(string $event, string $type, array $payload)
     {
         $this->event = $event;
+        $this->type = $type;
         $this->payload = $payload;
     }
 
@@ -33,6 +40,14 @@ class Message implements JsonSerializable
     public function getEvent(): string
     {
         return $this->event;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     /**
@@ -54,6 +69,7 @@ class Message implements JsonSerializable
     {
         return [
             'event' => $this->event,
+            'type' => $this->type,
             'payload' => $this->payload,
         ];
     }

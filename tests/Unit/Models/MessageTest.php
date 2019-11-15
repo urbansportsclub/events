@@ -15,13 +15,15 @@ class MessageTest extends TestCase
     public function can_create_message()
     {
         $event = 'MyEventClass';
+        $type = 'created';
         $payload = ['data about the event'];
-        $message = new Message($event, $payload);
+        $message = new Message($event, $type, $payload);
 
         $this->assertInstanceOf(Message::class, $message);
         $this->assertInstanceOf(JsonSerializable::class, $message);
         $this->assertSame($event, $message->getEvent());
+        $this->assertSame($type, $message->getType());
         $this->assertSame($payload, $message->getPayload());
-        $this->assertSame(['event' => $event, 'payload' => $payload], $message->jsonSerialize());
+        $this->assertSame(['event' => $event, 'type' => $type, 'payload' => $payload], $message->jsonSerialize());
     }
 }

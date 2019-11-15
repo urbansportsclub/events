@@ -35,9 +35,9 @@ class EventsServiceProvider extends ServiceProvider
 
         if (env('ATTACH_GLOBAL_LISTENER', false)) {
             Event::listen('*', function ($event, array $payload) {
-                $message = $this->app->make(Message::class, ['event' => $event, ['payload' => $payload]]);
+                $message = $this->app->make(Message::class, ['event' => $event, 'type' => 'inherited', 'payload' => $payload]);
                 $producer = $this->app->make(ProducerService::class);
-                $producer->produce(Topic::EVENT_GLOBAL, $message);
+                $producer->produce(Topic::GLOBAL_DOMAIN, $message);
             });
         }
     }
