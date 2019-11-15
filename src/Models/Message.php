@@ -25,7 +25,7 @@ class Message implements JsonSerializable
      * Message constructor.
      * @param string $event
      * @param string $type
-     * @param array $payload
+     * @param array  $payload
      */
     public function __construct(string $event, string $type, array $payload)
     {
