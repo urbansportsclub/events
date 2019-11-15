@@ -31,5 +31,6 @@
         <env name="SOCKET_TIMEOUT_MS" value="60000"/>
         <env name="ENABLE_IDEMPOTENCE" value="false"/>
         <env name="FLUSH_TIMEOUT_MS" value="10000"/>
+        <env name="ATTACH_GLOBAL_LISTENER" value="true"/>
     </php>
 </phpunit>

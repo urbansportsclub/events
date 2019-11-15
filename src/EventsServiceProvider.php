@@ -34,11 +34,13 @@ class EventsServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        Event::listen('*', function ($event, array $payload) {
-            $message = $this->app->make(Message::class, ['event' => $event, ['payload' => $payload]]);
-            $producer = $this->app->make(ProducerService::class);
-            $producer->produce(Topic::GLOBAL_EVENT, $message);
-        });
+        if (env('ATTACH_GLOBAL_LISTENER', false)) {
+            Event::listen('*', function ($event, array $payload) {
+                $message = $this->app->make(Message::class, ['event' => $event, ['payload' => $payload]]);
+                $producer = $this->app->make(ProducerService::class);
+                $producer->produce(Topic::EVENT_GLOBAL, $message);
+            });
+        }
     }
 
     /**

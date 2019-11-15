@@ -101,7 +101,7 @@ class ProducerServiceTest extends TestCase
             ->with(10000)
             ->willReturn(RD_KAFKA_RESP_ERR_NO_ERROR);
 
-        $this->producerService->produce(Topic::RESOURCE_CREATED, $this->messageMock);
+        $this->producerService->produce(Topic::EVENT_RESOURCE_CREATED, $this->messageMock);
     }
 
     /** @test */
@@ -131,6 +131,6 @@ class ProducerServiceTest extends TestCase
                 RD_KAFKA_RESP_ERR_NO_ERROR
             );
 
-        $this->producerService->produce(Topic::RESOURCE_CREATED, $this->messageMock);
+        $this->producerService->produce(Topic::EVENT_RESOURCE_CREATED, $this->messageMock);
     }
 }

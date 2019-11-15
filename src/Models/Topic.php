@@ -8,8 +8,8 @@ namespace OneFit\Events\Models;
  */
 abstract class Topic
 {
-    public const GLOBAL_EVENT = 'global_event';
-    public const RESOURCE_CREATED = 'resource_created';
-    public const RESOURCE_UPDATED = 'resource_updated';
-    public const RESOURCE_DELETED = 'resource_deleted';
+    public const EVENT_GLOBAL = 'event_global';
+    public const EVENT_RESOURCE_CREATED = 'event_resource_created';
+    public const EVENT_RESOURCE_UPDATED = 'event_resource_updated';
+    public const EVENT_RESOURCE_DELETED = 'event_resource_deleted';
 }
