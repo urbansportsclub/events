@@ -9,7 +9,7 @@ pipeline {
     }
     stage('Composer') {
       steps {
-        sh 'composer install --no-interaction --no-suggest --ignore-platform-reqs'
+        sh 'composer install --no-interaction --no-suggest'
       }
     }
     stage('Unit Testing') {
