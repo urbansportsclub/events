@@ -25,24 +25,6 @@ class EventsServiceProvider extends ServiceProvider
     protected $defer = true;
 
     /**
-     * Register wildcard events listener.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        parent::boot();
-
-        if (env('ATTACH_GLOBAL_LISTENER', false)) {
-            Event::listen('*', function ($event, array $payload) {
-                $message = $this->app->make(Message::class, ['event' => $event, 'type' => 'inherited', 'payload' => $payload]);
-                $producer = $this->app->make(ProducerService::class);
-                $producer->produce(Topic::GLOBAL_DOMAIN, $message);
-            });
-        }
-    }
-
-    /**
      * Register bindings in the container.
      *
      * @return void

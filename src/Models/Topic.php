@@ -7,6 +7,5 @@ namespace OneFit\Events\Models;
  */
 abstract class Topic
 {
-    public const GLOBAL_DOMAIN = 'global_domain';
     public const MEMBER_DOMAIN = 'member_domain';
 }
