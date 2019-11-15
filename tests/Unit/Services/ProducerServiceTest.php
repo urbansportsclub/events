@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Services;
 
-use OneFit\Events\Models\Message;
-use OneFit\Events\Models\Topic;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
+use OneFit\Events\Models\Topic;
 use PHPUnit\Framework\TestCase;
+use OneFit\Events\Models\Message;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;
 
