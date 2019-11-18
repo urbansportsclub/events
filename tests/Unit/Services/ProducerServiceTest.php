@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services;
 
-use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
 use OneFit\Events\Models\Topic;
