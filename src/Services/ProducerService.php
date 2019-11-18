@@ -42,11 +42,11 @@ class ProducerService
      */
     private function flushProducer(int $retries, int $counter = 0): void
     {
-        if ($counter > $retries) {
-            throw new \RuntimeException('Was unable to flush, messages might be lost!');
-        }
-
         $response = $this->producer->flush(env('FLUSH_TIMEOUT_MS', 10000));
+
+        if ($counter >= $retries) {
+            throw new \RuntimeException('Was unable to flush, messages might be lost!', $response);
+        }
 
         if (RD_KAFKA_RESP_ERR_NO_ERROR !== $response) {
             $this->flushProducer($retries, ++$counter);
