@@ -2,8 +2,8 @@
 
 namespace OneFit\Events\Services;
 
-use RdKafka\KafkaConsumer;
 use RdKafka\Message;
+use RdKafka\KafkaConsumer;
 
 /**
  * Class ConsumerService.
@@ -34,9 +34,9 @@ class ConsumerService
     }
 
     /**
-     * @param int $timeout
-     * @return Message
+     * @param  int                $timeout
      * @throws \RdKafka\Exception
+     * @return Message
      */
     public function consume(int $timeout): Message
     {
