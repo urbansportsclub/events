@@ -22,11 +22,6 @@ class ProducerServiceTest extends TestCase
     private $producerMock;
 
     /**
-     * @var Conf|MockClass
-     */
-    private $configurationMock;
-
-    /**
      * @var ProducerTopic|MockClass
      */
     private $topicMock;
@@ -47,34 +42,12 @@ class ProducerServiceTest extends TestCase
     public function setUp(): void
     {
         $this->producerMock = $this->createMock(Producer::class);
-        $this->configurationMock = $this->createMock(Conf::class);
         $this->topicMock = $this->createMock(ProducerTopic::class);
         $this->messageMock = $this->createMock(Message::class);
 
-        $this->producerService = new ProducerService($this->producerMock, $this->configurationMock);
+        $this->producerService = new ProducerService($this->producerMock);
 
         parent::setUp();
-    }
-
-    /** @test */
-    public function configuration_will_be_set()
-    {
-        $this->configurationMock
-            ->expects($this->any())
-            ->method('set')
-            ->withConsecutive(
-                ['metadata.broker.list', 'localhost:9092'],
-                ['socket.timeout.ms', 60000],
-                ['enable.idempotence', false],
-                ['topic.metadata.refresh.sparse', true],
-                ['topic.metadata.refresh.interval.ms', 300000],
-                ['queue.buffering.max.ms', 0.5],
-                ['internal.termination.signal', 29]
-            );
-
-        $producer = new ProducerService($this->producerMock, $this->configurationMock);
-
-        $this->assertInstanceOf(ProducerService::class, $producer);
     }
 
     /** @test */
@@ -101,7 +74,7 @@ class ProducerServiceTest extends TestCase
             ->with(10000)
             ->willReturn(RD_KAFKA_RESP_ERR_NO_ERROR);
 
-        $this->producerService->produce(Topic::MEMBER_DOMAIN, $this->messageMock);
+        $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
     }
 
     /** @test */
@@ -131,6 +104,6 @@ class ProducerServiceTest extends TestCase
                 RD_KAFKA_RESP_ERR_NO_ERROR
             );
 
-        $this->producerService->produce(Topic::MEMBER_DOMAIN, $this->messageMock);
+        $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
     }
 }

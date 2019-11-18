@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Services;
 
-use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Services\ConsumerService;
 use PHPUnit\Framework\MockObject\MockClass;
+use RdKafka\Message;
 
 /**
  * Class ConsumerServiceTest.
@@ -19,9 +19,9 @@ class ConsumerServiceTest extends TestCase
     private $consumerMock;
 
     /**
-     * @var Conf|MockClass
+     * @var Message|MockClass
      */
-    private $configurationMock;
+    private $messageMock;
 
     /**
      * @var ConsumerService
@@ -34,56 +34,9 @@ class ConsumerServiceTest extends TestCase
     public function setUp(): void
     {
         $this->consumerMock = $this->createMock(KafkaConsumer::class);
-        $this->configurationMock = $this->createMock(Conf::class);
+        $this->messageMock = $this->createMock(Message::class);
 
-        $this->consumerService = new ConsumerService($this->consumerMock, $this->configurationMock);
-    }
-
-    /** @test */
-    public function configuration_will_be_set()
-    {
-        $this->configurationMock
-            ->expects($this->any())
-            ->method('set')
-            ->withConsecutive(
-                ['metadata.broker.list', 'localhost:9092'],
-                ['auto.offset.reset', 'smallest'],
-                ['topic.metadata.refresh.sparse', true],
-                ['topic.metadata.refresh.interval.ms', 300000],
-                ['queue.buffering.max.ms', 0.5],
-                ['internal.termination.signal', 29]
-            );
-
-        $producer = new ConsumerService($this->consumerMock, $this->configurationMock);
-
-        $this->assertInstanceOf(ConsumerService::class, $producer);
-    }
-
-    /** @test */
-    public function can_set_group_id()
-    {
-        $groupId = 'friend_request_silent_push';
-
-        $this->configurationMock
-            ->expects($this->once())
-            ->method('set')
-            ->with('group.id', $groupId);
-
-        $this->consumerService->setGroupId($groupId);
-    }
-
-    /** @test */
-    public function can_set_consumer_cb()
-    {
-        $consumeCb = function () {
-        };
-
-        $this->configurationMock
-            ->expects($this->once())
-            ->method('setConsumeCb')
-            ->with($consumeCb);
-
-        $this->consumerService->setConsumeCb($consumeCb);
+        $this->consumerService = new ConsumerService($this->consumerMock);
     }
 
     /** @test */
@@ -105,8 +58,11 @@ class ConsumerServiceTest extends TestCase
         $this->consumerMock
             ->expects($this->once())
             ->method('consume')
-            ->with(120000);
+            ->with(120000)
+            ->willReturn($this->messageMock);
 
-        $this->consumerService->consume();
+        $response = $this->consumerService->consume(120000);
+
+        $this->assertSame($this->messageMock, $response);
     }
 }

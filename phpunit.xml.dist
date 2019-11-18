@@ -20,12 +20,10 @@
         </whitelist>
     </filter>
     <php>
-        <env name="CONSUME_TIMEOUT_MS" value="120000"/>
         <env name="METADATA_BROKER_LIST" value="localhost:9092"/>
         <env name="AUTO_OFFSET_RESET" value="smallest"/>
         <env name="TOPIC_METADATA_REFRESH_SPARSE" value="true"/>
         <env name="TOPIC_METADATA_REFRESH_INTERVAL_MS" value="300000"/>
-        <env name="QUEUE_BUFFERING_MAX_MS" value="0.5"/>
         <env name="INTERNAL_TERMINATION_SIGNAL" value="29"/>
         <env name="FLUSH_RETRIES" value="10"/>
         <env name="SOCKET_TIMEOUT_MS" value="60000"/>
