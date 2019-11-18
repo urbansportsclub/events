@@ -2,6 +2,7 @@
 
 namespace OneFit\Events;
 
+use Illuminate\Contracts\Foundation\Application;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -28,19 +29,24 @@ class EventsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ProducerService::class, function () {
-            $configuration = $this->buildConfiguration();
-            $producer = new Producer($configuration);
+        $this->app->singleton(ProducerService::class, function (Application $app) {
+            $configuration = $app->make(Conf::class);
+            $this->setConfiguration($configuration);
+
+            $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
             return new ProducerService($producer);
         });
 
-        $this->app->bind(ConsumerService::class, function ($app, array $params = []) {
-            $configuration = $this->buildConfiguration();
+        $this->app->bind(ConsumerService::class, function (Application $app, array $params = []) {
+            $configuration = $app->make(Conf::class);
+            $this->setConfiguration($configuration);
+
             if (isset($params['group_id'])) {
                 $configuration->set('group.id', $params['group_id']);
             }
-            $consumer = new KafkaConsumer($configuration);
+
+            $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
             return new ConsumerService($consumer);
         });
@@ -60,12 +66,11 @@ class EventsServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return Conf
+     * @param Conf $configuration
+     * @return void
      */
-    private function buildConfiguration(): Conf
+    private function setConfiguration(Conf $configuration): void
     {
-        $configuration = new Conf();
-
         // Initial list of Kafka brokers
         $configuration->set('metadata.broker.list', env('METADATA_BROKER_LIST', 'localhost:9092'));
 
@@ -87,7 +92,5 @@ class EventsServiceProvider extends ServiceProvider
         // Signal that librdkafka will use to quickly terminate on rd_kafka_destroy()
         pcntl_sigprocmask(SIG_BLOCK, [env('INTERNAL_TERMINATION_SIGNAL', 29)]);
         $configuration->set('internal.termination.signal', env('INTERNAL_TERMINATION_SIGNAL', 29));
-
-        return $configuration;
     }
 }
