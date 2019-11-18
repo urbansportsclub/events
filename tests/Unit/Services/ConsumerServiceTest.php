@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Services;
 
+use RdKafka\Message;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Services\ConsumerService;
 use PHPUnit\Framework\MockObject\MockClass;
-use RdKafka\Message;
 
 /**
  * Class ConsumerServiceTest.
