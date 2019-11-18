@@ -2,13 +2,13 @@
 
 namespace OneFit\Events;
 
-use Illuminate\Contracts\Foundation\Application;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
 use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
+use Illuminate\Contracts\Foundation\Application;
 
 /**
  * Class EventsServiceProvider.
@@ -66,7 +66,7 @@ class EventsServiceProvider extends ServiceProvider
     }
 
     /**
-     * @param Conf $configuration
+     * @param  Conf $configuration
      * @return void
      */
     private function setConfiguration(Conf $configuration): void
