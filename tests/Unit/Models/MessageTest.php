@@ -36,7 +36,7 @@ class MessageTest extends TestCase
             'type' => $type,
             'id' => $uuid,
             'source' => $source,
-            'payload' => $payload
+            'payload' => $payload,
         ], $message->jsonSerialize());
     }
 }
