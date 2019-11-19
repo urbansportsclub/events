@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace OneFit\Events\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\EventsServiceProvider;

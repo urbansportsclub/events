@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Services;
+namespace OneFit\Events\Tests\Unit\Services;
 
 use RdKafka\Message;
 use RdKafka\KafkaConsumer;

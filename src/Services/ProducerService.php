@@ -31,7 +31,7 @@ class ProducerService
     public function produce(Message $message, string $topic): void
     {
         $topic = $this->producer->newTopic($topic);
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($message));
+        $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($message, JSON_FORCE_OBJECT));
         $this->producer->poll(0);
         $this->flushProducer(env('FLUSH_RETRIES', 10));
     }

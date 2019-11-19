@@ -3,9 +3,9 @@
 namespace OneFit\Events\Models;
 
 /**
- * Class Topic.
+ * Class Domain.
  */
-abstract class Topic
+abstract class Domain
 {
     public const MEMBER_DOMAIN = 'member_domain';
 }

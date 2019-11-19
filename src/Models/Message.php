@@ -7,7 +7,7 @@ use JsonSerializable;
 class Message implements JsonSerializable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $event;
 
@@ -17,29 +17,85 @@ class Message implements JsonSerializable
     private $type;
 
     /**
-     * @var array
+     * @var string|null
+     */
+    private $id;
+
+    /**
+     * @var string|null
+     */
+    private $source;
+
+    /**
+     * @var string|null
      */
     private $payload;
 
     /**
      * Message constructor.
-     * @param string $event
      * @param string $type
-     * @param array  $payload
      */
-    public function __construct(string $event, string $type, array $payload)
+    public function __construct(string $type)
     {
-        $this->event = $event;
         $this->type = $type;
-        $this->payload = $payload;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
     }
 
     /**
-     * @return string
+     * @param string $id
+     * @return Message
      */
-    public function getEvent(): string
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param string $source
+     * @return Message
+     */
+    public function setSource(string $source): self
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEvent(): ?string
     {
         return $this->event;
+    }
+
+    /**
+     * @param string $event
+     * @return Message
+     */
+    public function setEvent(string $event): self
+    {
+        $this->event = $event;
+
+        return $this;
     }
 
     /**
@@ -51,11 +107,33 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return array
+     * @param string $type
+     * @return Message
      */
-    public function getPayload(): array
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPayload(): ?string
     {
         return $this->payload;
+    }
+
+    /**
+     * @param string $payload
+     * @return Message
+     */
+    public function setPayload(string $payload): self
+    {
+        $this->payload = $payload;
+
+        return $this;
     }
 
     /**
@@ -70,7 +148,21 @@ class Message implements JsonSerializable
         return [
             'event' => $this->event,
             'type' => $this->type,
+            'id' => $this->id,
+            'source' => $this->source,
             'payload' => $this->payload,
         ];
+    }
+
+    /**
+     * @param array $data
+     */
+    public function hydrate(array $data): void
+    {
+        isset($data['event']) && $this->setEvent($data['event']);
+        isset($data['type']) && $this->setType($data['type']);
+        isset($data['id']) && $this->setId($data['id']);
+        isset($data['source']) && $this->setSource($data['source']);
+        isset($data['payload']) && $this->setPayload($data['payload']);
     }
 }

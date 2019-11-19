@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\Services;
+namespace OneFit\Events\Tests\Unit\Services;
 
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
-use OneFit\Events\Models\Topic;
+use OneFit\Events\Models\Domain;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use OneFit\Events\Services\ProducerService;
@@ -73,7 +73,7 @@ class ProducerServiceTest extends TestCase
             ->with(10000)
             ->willReturn(RD_KAFKA_RESP_ERR_NO_ERROR);
 
-        $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
+        $this->producerService->produce($this->messageMock, Domain::MEMBER_DOMAIN);
     }
 
     /** @test */
@@ -103,6 +103,6 @@ class ProducerServiceTest extends TestCase
                 RD_KAFKA_RESP_ERR_NO_ERROR
             );
 
-        $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
+        $this->producerService->produce($this->messageMock, Domain::MEMBER_DOMAIN);
     }
 }

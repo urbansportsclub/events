@@ -2,6 +2,9 @@
 
 namespace OneFit\Events;
 
+use Illuminate\Support\Facades\Config;
+use OneFit\Events\Models\Message;
+use OneFit\Events\Observers\GenericObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -29,27 +32,19 @@ class EventsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ProducerService::class, function (Application $app) {
-            $configuration = $app->make(Conf::class);
-            $this->setConfiguration($configuration);
+        $this->registerProducer();
+        $this->registerConsumer();
+    }
 
-            $producer = $app->make(Producer::class, ['conf' => $configuration]);
-
-            return new ProducerService($producer);
-        });
-
-        $this->app->bind(ConsumerService::class, function (Application $app, array $params = []) {
-            $configuration = $app->make(Conf::class);
-            $this->setConfiguration($configuration);
-
-            if (isset($params['group_id'])) {
-                $configuration->set('group.id', $params['group_id']);
-            }
-
-            $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
-
-            return new ConsumerService($consumer);
-        });
+    /**
+     * Bootstrap application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->setupConfig();
+        $this->registerObservers();
     }
 
     /**
@@ -92,5 +87,93 @@ class EventsServiceProvider extends ServiceProvider
         // Signal that librdkafka will use to quickly terminate on rd_kafka_destroy()
         pcntl_sigprocmask(SIG_BLOCK, [env('INTERNAL_TERMINATION_SIGNAL', 29)]);
         $configuration->set('internal.termination.signal', env('INTERNAL_TERMINATION_SIGNAL', 29));
+    }
+
+    /**
+     * @return void
+     */
+    private function registerProducer(): void
+    {
+        $this->app->singleton(ProducerService::class, function (Application $app) {
+            $configuration = $app->make(Conf::class);
+            $this->setConfiguration($configuration);
+
+            $producer = $app->make(Producer::class, ['conf' => $configuration]);
+
+            return new ProducerService($producer);
+        });
+    }
+
+    /**
+     * @return void
+     */
+    private function registerConsumer(): void
+    {
+        $this->app->bind(ConsumerService::class, function (Application $app, array $params = []) {
+            $configuration = $app->make(Conf::class);
+            $this->setConfiguration($configuration);
+
+            if (isset($params['group_id'])) {
+                $configuration->set('group.id', $params['group_id']);
+            }
+
+            $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
+
+            return new ConsumerService($consumer);
+        });
+    }
+
+    /**
+     * @return void
+     */
+    private function registerObservers(): void
+    {
+        $producers = Config::get('event.producers', []);
+
+        foreach ($producers as $domain => $domainProducers) {
+            if (is_array($domainProducers)) {
+                array_walk($producers, function ($type, $producer, $domain) {
+                    $this->registerObserver($type, $producer, $domain);
+                });
+            }
+        }
+    }
+
+    /**
+     * Setup exact configuration.
+     */
+    protected function setupConfig()
+    {
+        $source = realpath(__DIR__.'../config/event.php');
+        $this->publishes([$source => $this->configPath('event.php')]);
+        $this->mergeConfigFrom($source, 'event');
+    }
+
+    /**
+     * Get the configuration path.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    private function configPath($path = ''): string
+    {
+        return $this->app->make('path.config').($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+
+    /**
+     * @param string $type
+     * @param string $producer
+     * @param string $domain
+     */
+    private function registerObserver(string $type, string $producer, string $domain): void
+    {
+        if (class_exists($producer) && method_exists($producer, 'observe')) {
+            $message = $this->app->make(Message::class, ['type' => $type]);
+            $producer::observe($this->app->make(GenericObserver::class, [
+                'producer' => $this->app->make(ProducerService::class),
+                'message' => $message,
+                'domain' => $domain
+            ]));
+        }
     }
 }
