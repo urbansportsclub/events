@@ -148,7 +148,7 @@ class EventsServiceProvider extends ServiceProvider
      */
     protected function setupConfig()
     {
-        $source = realpath(__DIR__ . '/../config/events.php');
+        $source = realpath(__DIR__.'/../config/events.php');
         $this->publishes([$source => $this->configPath('events.php')]);
         $this->mergeConfigFrom($source, 'events');
     }
