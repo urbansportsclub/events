@@ -40,7 +40,6 @@ class Message implements JsonSerializable
         $this->type = $type;
     }
 
-
     /**
      * @return string|null
      */
@@ -50,7 +49,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return Message
      */
     public function setId(string $id): self
@@ -69,7 +68,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $source
+     * @param  string  $source
      * @return Message
      */
     public function setSource(string $source): self
@@ -88,7 +87,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $event
+     * @param  string  $event
      * @return Message
      */
     public function setEvent(string $event): self
@@ -107,7 +106,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $type
+     * @param  string  $type
      * @return Message
      */
     public function setType(string $type): self
@@ -126,7 +125,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $payload
+     * @param  string  $payload
      * @return Message
      */
     public function setPayload(string $payload): self
