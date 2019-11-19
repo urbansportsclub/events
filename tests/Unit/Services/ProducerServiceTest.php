@@ -4,8 +4,8 @@ namespace OneFit\Events\Tests\Unit\Services;
 
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
-use OneFit\Events\Models\Domain;
 use PHPUnit\Framework\TestCase;
+use OneFit\Events\Models\Domain;
 use OneFit\Events\Models\Message;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;

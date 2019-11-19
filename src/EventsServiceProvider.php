@@ -2,15 +2,15 @@
 
 namespace OneFit\Events;
 
-use Illuminate\Support\Facades\Config;
-use OneFit\Events\Models\Message;
-use OneFit\Events\Observers\GenericObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
+use OneFit\Events\Models\Message;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
+use OneFit\Events\Observers\GenericObserver;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
@@ -152,7 +152,7 @@ class EventsServiceProvider extends ServiceProvider
     /**
      * Get the configuration path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     private function configPath($path = ''): string
@@ -172,7 +172,7 @@ class EventsServiceProvider extends ServiceProvider
             $producer::observe($this->app->make(GenericObserver::class, [
                 'producer' => $this->app->make(ProducerService::class),
                 'message' => $message,
-                'domain' => $domain
+                'domain' => $domain,
             ]));
         }
     }

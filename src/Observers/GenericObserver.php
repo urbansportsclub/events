@@ -2,11 +2,10 @@
 
 namespace OneFit\Events\Observers;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Queue\QueueableEntity;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 use OneFit\Events\Services\ProducerService;
+use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
  * Class GenericObserver.
@@ -35,8 +34,8 @@ class GenericObserver
     /**
      * GenericObserver constructor.
      * @param ProducerService $producer
-     * @param Message $message
-     * @param string $domain
+     * @param Message         $message
+     * @param string          $domain
      */
     public function __construct(ProducerService $producer, Message $message, string $domain)
     {
@@ -44,7 +43,6 @@ class GenericObserver
         $this->message = $message;
         $this->domain = $domain;
     }
-
 
     /**
      * @param QueueableEntity $entity
@@ -74,8 +72,8 @@ class GenericObserver
     }
 
     /**
-     * @param QueueableEntity $entity
-     * @param string $event
+     * @param  QueueableEntity $entity
+     * @param  string          $event
      * @return Message
      */
     private function createMessage(QueueableEntity $entity, string $event): Message
