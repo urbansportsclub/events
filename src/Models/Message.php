@@ -132,7 +132,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $connection
+     * @param  string  $connection
      * @return Message
      */
     public function setConnection(string $connection): self

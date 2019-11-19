@@ -5,8 +5,7 @@ namespace OneFit\Events\Observers;
 use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
- * Class UpdatedObserver
- * @package OneFit\Events\Observers
+ * Class UpdatedObserver.
  */
 class UpdatedObserver extends AbstractObserver
 {

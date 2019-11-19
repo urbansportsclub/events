@@ -8,8 +8,7 @@ use OneFit\Events\Services\ProducerService;
 use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
- * Class AbstractObserver
- * @package OneFit\Events\Observers
+ * Class AbstractObserver.
  */
 class AbstractObserver
 {

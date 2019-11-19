@@ -3,8 +3,8 @@
 namespace OneFit\Events\Tests\Unit\Models;
 
 use JsonSerializable;
-use OneFit\Events\Models\Source;
 use PHPUnit\Framework\TestCase;
+use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 
 /**

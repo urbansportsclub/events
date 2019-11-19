@@ -2,18 +2,17 @@
 
 namespace OneFit\Events\Tests\Unit\Observers;
 
-use Illuminate\Contracts\Queue\QueueableEntity;
-use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Domain;
 use OneFit\Events\Models\Message;
-use OneFit\Events\Observers\DeletedObserver;
+use Illuminate\Support\Facades\Log;
 use OneFit\Events\Services\ProducerService;
+use OneFit\Events\Observers\DeletedObserver;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
- * Class DeletedObserverTest
- * @package OneFit\Events\Tests\Unit\Observers
+ * Class DeletedObserverTest.
  */
 class DeletedObserverTest extends TestCase
 {
