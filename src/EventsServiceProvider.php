@@ -132,9 +132,9 @@ class EventsServiceProvider extends ServiceProvider
 
         foreach ($producers as $domain => $domainProducers) {
             if (is_array($domainProducers)) {
-                array_walk($producers, function ($type, $producer, $domain) {
+                array_walk($domainProducers, function ($type, $producer, $domain) {
                     $this->registerObserver($type, $producer, $domain);
-                });
+                }, $domain);
             }
         }
     }
@@ -144,9 +144,9 @@ class EventsServiceProvider extends ServiceProvider
      */
     protected function setupConfig()
     {
-        $source = realpath(__DIR__.'../config/event.php');
-        $this->publishes([$source => $this->configPath('event.php')]);
-        $this->mergeConfigFrom($source, 'event');
+        $source = realpath(__DIR__ . '/../config/events.php');
+        $this->publishes([$source => $this->configPath('events.php')]);
+        $this->mergeConfigFrom($source, 'events');
     }
 
     /**
