@@ -2,23 +2,21 @@
 
 namespace OneFit\Events;
 
-use OneFit\Events\Models\Source;
-use OneFit\Events\Observers\CreatedObserver;
-use OneFit\Events\Observers\UpdatedObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
+use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
-use OneFit\Events\Observers\AbstractObserver;
+use OneFit\Events\Observers\CreatedObserver;
+use OneFit\Events\Observers\UpdatedObserver;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
- * Class EventsServiceProvider
- * @package OneFit\Events
+ * Class EventsServiceProvider.
  */
 class EventsServiceProvider extends ServiceProvider
 {
@@ -227,7 +225,7 @@ class EventsServiceProvider extends ServiceProvider
     }
 
     /**
-     * @param string $type
+     * @param  string  $type
      * @return Message
      */
     private function makeMessage(string $type): Message

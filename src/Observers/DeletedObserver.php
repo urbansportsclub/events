@@ -5,8 +5,7 @@ namespace OneFit\Events\Observers;
 use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
- * Class DeletedObserver
- * @package OneFit\Events\Observers
+ * Class DeletedObserver.
  */
 class DeletedObserver extends AbstractObserver
 {
