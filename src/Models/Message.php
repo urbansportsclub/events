@@ -22,9 +22,14 @@ class Message implements JsonSerializable
     private $id;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $source;
+
+    /**
+     * @var string
+     */
+    private $connection;
 
     /**
      * @var string|null
@@ -34,10 +39,12 @@ class Message implements JsonSerializable
     /**
      * Message constructor.
      * @param string $type
+     * @param string $source
      */
-    public function __construct(string $type)
+    public function __construct(string $type, string $source)
     {
         $this->type = $type;
+        $this->source = $source;
     }
 
     /**
@@ -60,9 +67,9 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getSource(): ?string
+    public function getSource(): string
     {
         return $this->source;
     }
@@ -119,6 +126,25 @@ class Message implements JsonSerializable
     /**
      * @return string|null
      */
+    public function getConnection(): ?string
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @param string $connection
+     * @return Message
+     */
+    public function setConnection(string $connection): self
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getPayload(): ?string
     {
         return $this->payload;
@@ -149,6 +175,7 @@ class Message implements JsonSerializable
             'type' => $this->type,
             'id' => $this->id,
             'source' => $this->source,
+            'connection' => $this->connection,
             'payload' => $this->payload,
         ];
     }
@@ -162,6 +189,7 @@ class Message implements JsonSerializable
         isset($data['type']) && $this->setType($data['type']);
         isset($data['id']) && $this->setId($data['id']);
         isset($data['source']) && $this->setSource($data['source']);
+        isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);
     }
 }

@@ -2,6 +2,9 @@
 
 namespace OneFit\Events;
 
+use OneFit\Events\Models\Source;
+use OneFit\Events\Observers\CreatedObserver;
+use OneFit\Events\Observers\UpdatedObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -10,11 +13,12 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
-use OneFit\Events\Observers\GenericObserver;
+use OneFit\Events\Observers\AbstractObserver;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
- * Class EventsServiceProvider.
+ * Class EventsServiceProvider
+ * @package OneFit\Events
  */
 class EventsServiceProvider extends ServiceProvider
 {
@@ -128,12 +132,12 @@ class EventsServiceProvider extends ServiceProvider
      */
     private function registerObservers(): void
     {
-        $producers = Config::get('event.producers', []);
+        $producers = Config::get('events.producers', []);
 
         foreach ($producers as $domain => $domainProducers) {
             if (is_array($domainProducers)) {
-                array_walk($domainProducers, function ($type, $producer, $domain) {
-                    $this->registerObserver($type, $producer, $domain);
+                array_walk($domainProducers, function (string $producer, string $type, string $domain) {
+                    $this->registerGenericObservers($producer, $type, $domain);
                 }, $domain);
             }
         }
@@ -161,19 +165,75 @@ class EventsServiceProvider extends ServiceProvider
     }
 
     /**
-     * @param string $type
      * @param string $producer
+     * @param string $type
      * @param string $domain
      */
-    private function registerObserver(string $type, string $producer, string $domain): void
+    private function registerGenericObservers(string $producer, string $type, string $domain): void
     {
-        if (class_exists($producer) && method_exists($producer, 'observe')) {
-            $message = $this->app->make(Message::class, ['type' => $type]);
-            $producer::observe($this->app->make(GenericObserver::class, [
+        if (class_exists($producer)) {
+            $this->registerCreatedObserver($producer, $type, $domain);
+            $this->registerUpdatedObserver($producer, $type, $domain);
+            $this->registerDeletedObserver($producer, $type, $domain);
+        }
+    }
+
+    /**
+     * @param string $producer
+     * @param string $type
+     * @param string $domain
+     */
+    private function registerCreatedObserver(string $producer, string $type, string $domain): void
+    {
+        if (method_exists($producer, 'created')) {
+            $producer::created($this->app->make(CreatedObserver::class, [
                 'producer' => $this->app->make(ProducerService::class),
-                'message' => $message,
+                'message' => $this->makeMessage($type),
                 'domain' => $domain,
             ]));
         }
+    }
+
+    /**
+     * @param string $producer
+     * @param string $type
+     * @param string $domain
+     */
+    private function registerUpdatedObserver(string $producer, string $type, string $domain): void
+    {
+        if (method_exists($producer, 'updated')) {
+            $producer::updated($this->app->make(UpdatedObserver::class, [
+                'producer' => $this->app->make(ProducerService::class),
+                'message' => $this->makeMessage($type),
+                'domain' => $domain,
+            ]));
+        }
+    }
+
+    /**
+     * @param string $producer
+     * @param string $type
+     * @param string $domain
+     */
+    private function registerDeletedObserver(string $producer, string $type, string $domain): void
+    {
+        if (method_exists($producer, 'deleted')) {
+            $producer::created($this->app->make(UpdatedObserver::class, [
+                'producer' => $this->app->make(ProducerService::class),
+                'message' => $this->makeMessage($type),
+                'domain' => $domain,
+            ]));
+        }
+    }
+
+    /**
+     * @param string $type
+     * @return Message
+     */
+    private function makeMessage(string $type): Message
+    {
+        $source = Config::get('events.source', Source::UNDEFINED);
+
+        return $this->app->make(Message::class, ['type' => $type, 'source' => $source]);
     }
 }

@@ -8,9 +8,10 @@ use OneFit\Events\Services\ProducerService;
 use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
- * Class GenericObserver.
+ * Class AbstractObserver
+ * @package OneFit\Events\Observers
  */
-class GenericObserver
+class AbstractObserver
 {
     private const EVENT_CREATED = 'created';
     private const EVENT_UPDATED = 'updated';
@@ -32,7 +33,7 @@ class GenericObserver
     private $domain;
 
     /**
-     * GenericObserver constructor.
+     * AbstractObserver constructor.
      * @param ProducerService $producer
      * @param Message         $message
      * @param string          $domain
@@ -47,7 +48,7 @@ class GenericObserver
     /**
      * @param QueueableEntity $entity
      */
-    public function created(QueueableEntity $entity): void
+    protected function created(QueueableEntity $entity): void
     {
         $message = $this->createMessage($entity, self::EVENT_CREATED);
         $this->produce($message);
@@ -56,7 +57,7 @@ class GenericObserver
     /**
      * @param QueueableEntity $entity
      */
-    public function updated(QueueableEntity $entity): void
+    protected function updated(QueueableEntity $entity): void
     {
         $message = $this->createMessage($entity, self::EVENT_UPDATED);
         $this->produce($message);
@@ -65,7 +66,7 @@ class GenericObserver
     /**
      * @param QueueableEntity $entity
      */
-    public function deleted(QueueableEntity $entity): void
+    protected function deleted(QueueableEntity $entity): void
     {
         $message = $this->createMessage($entity, self::EVENT_DELETED);
         $this->produce($message);
@@ -81,7 +82,7 @@ class GenericObserver
         return $this->getMessage()
             ->setEvent($event)
             ->setId(strval($entity->getQueueableId()))
-            ->setSource(strval($entity->getQueueableConnection()))
+            ->setConnection(strval($entity->getQueueableConnection()))
             ->setPayload(json_encode($entity, JSON_FORCE_OBJECT));
     }
 
