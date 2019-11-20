@@ -44,7 +44,9 @@ class CreatedObserverTest extends TestCase
         $this->entityMock = $this->createMock(QueueableEntity::class);
         $this->producerMock = $this->createMock(ProducerService::class);
         $this->messageMock = $this->createMock(Message::class);
-        $this->createdObserver = new CreatedObserver(function () { return $this->producerMock; }, $this->messageMock, Domain::MEMBER_DOMAIN);
+        $this->createdObserver = new CreatedObserver(function () {
+            return $this->producerMock;
+        }, $this->messageMock, Domain::MEMBER_DOMAIN);
 
         parent::setUp();
     }
