@@ -44,7 +44,7 @@ class DeletedObserverTest extends TestCase
         $this->entityMock = $this->createMock(QueueableEntity::class);
         $this->producerMock = $this->createMock(ProducerService::class);
         $this->messageMock = $this->createMock(Message::class);
-        $this->deletedObserver = new DeletedObserver($this->producerMock, $this->messageMock, Domain::MEMBER_DOMAIN);
+        $this->deletedObserver = new DeletedObserver(function () { return $this->producerMock; }, $this->messageMock, Domain::MEMBER_DOMAIN);
 
         parent::setUp();
     }

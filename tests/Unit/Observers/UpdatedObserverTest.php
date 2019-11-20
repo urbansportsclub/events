@@ -44,7 +44,7 @@ class UpdatedObserverTest extends TestCase
         $this->entityMock = $this->createMock(QueueableEntity::class);
         $this->producerMock = $this->createMock(ProducerService::class);
         $this->messageMock = $this->createMock(Message::class);
-        $this->updatedObserver = new UpdatedObserver($this->producerMock, $this->messageMock, Domain::MEMBER_DOMAIN);
+        $this->updatedObserver = new UpdatedObserver(function () { return $this->producerMock; }, $this->messageMock, Domain::MEMBER_DOMAIN);
 
         parent::setUp();
     }

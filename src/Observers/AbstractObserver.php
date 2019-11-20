@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Observers;
 
+use Closure;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 use OneFit\Events\Services\ProducerService;
@@ -10,14 +11,14 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 /**
  * Class AbstractObserver.
  */
-class AbstractObserver
+abstract class AbstractObserver
 {
     private const EVENT_CREATED = 'created';
     private const EVENT_UPDATED = 'updated';
     private const EVENT_DELETED = 'deleted';
 
     /**
-     * @var ProducerService
+     * @var Closure
      */
     private $producer;
 
@@ -33,11 +34,11 @@ class AbstractObserver
 
     /**
      * AbstractObserver constructor.
-     * @param ProducerService $producer
-     * @param Message         $message
-     * @param string          $domain
+     * @param Closure $producer
+     * @param Message $message
+     * @param string $domain
      */
-    public function __construct(ProducerService $producer, Message $message, string $domain)
+    public function __construct(Closure $producer, Message $message, string $domain)
     {
         $this->producer = $producer;
         $this->message = $message;
@@ -90,8 +91,9 @@ class AbstractObserver
      */
     private function produce(Message $message): void
     {
+        $producer = $this->producer;
         try {
-            $this->producer->produce($message, $this->domain);
+            $producer()->produce($message, $this->domain);
         } catch (\Exception $ex) {
             Log::error($ex->getMessage(), [
                 'exception' => $ex,

@@ -185,7 +185,7 @@ class EventsServiceProvider extends ServiceProvider
     {
         if (method_exists($producer, 'created')) {
             $producer::created($this->app->make(CreatedObserver::class, [
-                'producer' => $this->app->make(ProducerService::class),
+                'producer' => function() { return $this->app->make(ProducerService::class); },
                 'message' => $this->makeMessage($type),
                 'domain' => $domain,
             ]));
@@ -201,7 +201,7 @@ class EventsServiceProvider extends ServiceProvider
     {
         if (method_exists($producer, 'updated')) {
             $producer::updated($this->app->make(UpdatedObserver::class, [
-                'producer' => $this->app->make(ProducerService::class),
+                'producer' => function() { return $this->app->make(ProducerService::class); },
                 'message' => $this->makeMessage($type),
                 'domain' => $domain,
             ]));
@@ -217,7 +217,7 @@ class EventsServiceProvider extends ServiceProvider
     {
         if (method_exists($producer, 'deleted')) {
             $producer::created($this->app->make(UpdatedObserver::class, [
-                'producer' => $this->app->make(ProducerService::class),
+                'producer' => function() { return $this->app->make(ProducerService::class); },
                 'message' => $this->makeMessage($type),
                 'domain' => $domain,
             ]));
