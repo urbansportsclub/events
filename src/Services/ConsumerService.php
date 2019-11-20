@@ -25,9 +25,9 @@ class ConsumerService
     }
 
     /**
-     * @param array $topics
-     * @return ConsumerService
+     * @param  array              $topics
      * @throws \RdKafka\Exception
+     * @return ConsumerService
      */
     public function subscribe(array $topics): self
     {

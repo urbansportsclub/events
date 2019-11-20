@@ -205,6 +205,6 @@ class Message implements JsonSerializable
      */
     public function getSignature(): string
     {
-        return sha1(json_encode($this, JSON_FORCE_OBJECT) . $this->salt);
+        return sha1(json_encode($this, JSON_FORCE_OBJECT).$this->salt);
     }
 }

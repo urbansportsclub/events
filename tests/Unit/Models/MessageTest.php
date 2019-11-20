@@ -42,6 +42,6 @@ class MessageTest extends TestCase
             'connection' => $connection,
             'payload' => $payload,
         ], $message->jsonSerialize());
-        $this->assertSame(sha1(json_encode($message, JSON_FORCE_OBJECT) . 'secret-salt'), $message->getSignature());
+        $this->assertSame(sha1(json_encode($message, JSON_FORCE_OBJECT).'secret-salt'), $message->getSignature());
     }
 }
