@@ -5,7 +5,6 @@ namespace OneFit\Events\Observers;
 use Closure;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
-use OneFit\Events\Services\ProducerService;
 use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
@@ -36,7 +35,7 @@ abstract class AbstractObserver
      * AbstractObserver constructor.
      * @param Closure $producer
      * @param Message $message
-     * @param string $domain
+     * @param string  $domain
      */
     public function __construct(Closure $producer, Message $message, string $domain)
     {
