@@ -37,14 +37,21 @@ class Message implements JsonSerializable
     private $payload;
 
     /**
+     * @var string
+     */
+    private $salt;
+
+    /**
      * Message constructor.
      * @param string $type
      * @param string $source
+     * @param string $salt
      */
-    public function __construct(string $type, string $source)
+    public function __construct(string $type, string $source, string $salt)
     {
         $this->type = $type;
         $this->source = $source;
+        $this->salt = $salt;
     }
 
     /**
@@ -191,5 +198,13 @@ class Message implements JsonSerializable
         isset($data['source']) && $this->setSource($data['source']);
         isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSignature(): string
+    {
+        return sha1(json_encode($this, JSON_FORCE_OBJECT) . $this->salt);
     }
 }

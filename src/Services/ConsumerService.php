@@ -25,12 +25,15 @@ class ConsumerService
     }
 
     /**
-     * @param  array              $topics
+     * @param array $topics
+     * @return ConsumerService
      * @throws \RdKafka\Exception
      */
-    public function subscribe(array $topics): void
+    public function subscribe(array $topics): self
     {
         $this->consumer->subscribe($topics);
+
+        return $this;
     }
 
     /**

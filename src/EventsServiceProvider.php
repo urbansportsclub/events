@@ -115,9 +115,7 @@ class EventsServiceProvider extends ServiceProvider
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
 
-            if (isset($params['group_id'])) {
-                $configuration->set('group.id', $params['group_id']);
-            }
+            isset($params['group_id']) && $configuration->set('group.id', $params['group_id']);
 
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
@@ -232,6 +230,10 @@ class EventsServiceProvider extends ServiceProvider
     {
         $source = Config::get('events.source', Source::UNDEFINED);
 
-        return $this->app->make(Message::class, ['type' => $type, 'source' => $source]);
+        return $this->app->make(Message::class, [
+            'type' => $type,
+            'source' => $source,
+            'salt' => env('MESSAGE_SIGNATURE_SALT', ''),
+        ]);
     }
 }

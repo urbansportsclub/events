@@ -20,7 +20,7 @@ class MessageTest extends TestCase
         $connection = 'mysql';
         $event = 'MyEventClass';
         $payload = 'data about the event';
-        $message = new Message($type, Source::API);
+        $message = new Message($type, Source::API, 'secret-salt');
 
         $message->setEvent($event)
             ->setId($uuid)
@@ -42,5 +42,6 @@ class MessageTest extends TestCase
             'connection' => $connection,
             'payload' => $payload,
         ], $message->jsonSerialize());
+        $this->assertSame(sha1(json_encode($message, JSON_FORCE_OBJECT) . 'secret-salt'), $message->getSignature());
     }
 }
