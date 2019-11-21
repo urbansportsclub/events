@@ -2,7 +2,6 @@
 
 namespace OneFit\Events;
 
-use OneFit\Events\Observers\DeletedObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -13,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
 use OneFit\Events\Observers\CreatedObserver;
+use OneFit\Events\Observers\DeletedObserver;
 use OneFit\Events\Observers\UpdatedObserver;
 use Illuminate\Contracts\Foundation\Application;
 
