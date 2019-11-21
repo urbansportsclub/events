@@ -2,6 +2,7 @@
 
 namespace OneFit\Events;
 
+use OneFit\Events\Observers\DeletedObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -208,7 +209,7 @@ class EventsServiceProvider extends ServiceProvider
     private function registerDeletedObserver(string $producer, string $type, string $domain): void
     {
         if (method_exists($producer, 'deleted')) {
-            $producer::deleted($this->app->make(UpdatedObserver::class, [
+            $producer::deleted($this->app->make(DeletedObserver::class, [
                 'producer' => function () {
                     return $this->app->make(ProducerService::class);
                 },
