@@ -21,13 +21,6 @@ use Illuminate\Contracts\Foundation\Application;
 class EventsServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
      * Register bindings in the container.
      *
      * @return void
