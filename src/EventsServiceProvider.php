@@ -79,9 +79,6 @@ class EventsServiceProvider extends ServiceProvider
         // Default timeout for network requests
         $configuration->set('socket.timeout.ms', env('SOCKET_TIMEOUT_MS', 60000));
 
-        // Produce exactly once and keep the original produce order
-        $configuration->set('enable.idempotence', env('ENABLE_IDEMPOTENCE', 'false'));
-
         // Fetch only the topics in use, reduce the bandwidth
         $configuration->set('topic.metadata.refresh.sparse', env('TOPIC_METADATA_REFRESH_SPARSE', 'true'));
         $configuration->set('topic.metadata.refresh.interval.ms', env('TOPIC_METADATA_REFRESH_INTERVAL_MS', 300000));
