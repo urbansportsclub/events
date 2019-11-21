@@ -92,9 +92,6 @@ class EventsServiceProvider extends ServiceProvider
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
 
-            // Produce exactly once and keep the original produce order
-            $configuration->set('enable.idempotence', env('ENABLE_IDEMPOTENCE', 'false'));
-
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
             return new ProducerService($producer);
