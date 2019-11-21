@@ -208,7 +208,7 @@ class EventsServiceProvider extends ServiceProvider
     private function registerDeletedObserver(string $producer, string $type, string $domain): void
     {
         if (method_exists($producer, 'deleted')) {
-            $producer::created($this->app->make(UpdatedObserver::class, [
+            $producer::deleted($this->app->make(UpdatedObserver::class, [
                 'producer' => function () {
                     return $this->app->make(ProducerService::class);
                 },
