@@ -71,11 +71,6 @@ class EventsServiceProvider extends ServiceProvider
         // Initial list of Kafka brokers
         $configuration->set('metadata.broker.list', env('METADATA_BROKER_LIST', 'localhost:9092'));
 
-        // Set where to start consuming messages when there is no initial offset in
-        // offset store or the desired offset is out of range.
-        // 'smallest': start from the beginning
-        $configuration->set('auto.offset.reset', env('AUTO_OFFSET_RESET', 'smallest'));
-
         // Default timeout for network requests
         $configuration->set('socket.timeout.ms', env('SOCKET_TIMEOUT_MS', 60000));
 
@@ -97,6 +92,9 @@ class EventsServiceProvider extends ServiceProvider
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
 
+            // Produce exactly once and keep the original produce order
+            $configuration->set('enable.idempotence', env('ENABLE_IDEMPOTENCE', 'false'));
+
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
             return new ProducerService($producer);
@@ -113,6 +111,11 @@ class EventsServiceProvider extends ServiceProvider
             $this->setConfiguration($configuration);
 
             isset($params['group_id']) && $configuration->set('group.id', $params['group_id']);
+
+            // Set where to start consuming messages when there is no initial offset in
+            // offset store or the desired offset is out of range.
+            // 'smallest': start from the beginning
+            $configuration->set('auto.offset.reset', env('AUTO_OFFSET_RESET', 'smallest'));
 
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
