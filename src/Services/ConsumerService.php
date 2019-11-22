@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Services;
 
+use Illuminate\Support\Facades\Log;
 use RdKafka\Message;
 use RdKafka\KafkaConsumer;
 
@@ -37,13 +38,21 @@ class ConsumerService
     }
 
     /**
-     * @param  int                $timeout
-     * @throws \RdKafka\Exception
+     * @param int $timeout
      * @return Message
+     * @throws \RdKafka\Exception
      */
     public function consume(int $timeout): Message
     {
-        return $this->consumer->consume($timeout);
+        try {
+            return $this->consumer->consume($timeout);
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage(), [
+                'exception' => $ex,
+                'metadata' => $this->consumer->getMetadata(false, null, $timeout),
+                'topics' => $this->consumer->getSubscription(),
+            ]);
+        }
     }
 
     /**
@@ -52,6 +61,15 @@ class ConsumerService
      */
     public function commit(Message $message = null): void
     {
-        $this->consumer->commitAsync($message);
+        try {
+            $this->consumer->commitAsync($message);
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage(), [
+                'exception' => $ex,
+                'message' => $message,
+                'metadata' => $this->consumer->getMetadata(false, null, 60e3),
+                'topics' => $this->consumer->getSubscription(),
+            ]);
+        }
     }
 }
