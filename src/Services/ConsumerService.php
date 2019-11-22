@@ -45,4 +45,13 @@ class ConsumerService
     {
         return $this->consumer->consume($timeout);
     }
+
+    /**
+     * @param Message $message
+     * @throws \RdKafka\Exception
+     */
+    public function commit(Message $message): void
+    {
+        $this->consumer->commit($message);
+    }
 }

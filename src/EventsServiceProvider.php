@@ -108,6 +108,9 @@ class EventsServiceProvider extends ServiceProvider
             // 'smallest': start from the beginning
             $configuration->set('auto.offset.reset', env('AUTO_OFFSET_RESET', 'smallest'));
 
+            // Automatically and periodically commit offsets in the background.
+            $configuration->set('enable.auto.commit', env('ENABLE_AUTO_COMMIT', 'true'));
+
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
             return new ConsumerService($consumer);
