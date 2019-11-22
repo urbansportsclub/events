@@ -47,7 +47,7 @@ class ConsumerService
     }
 
     /**
-     * @param Message|null $message
+     * @param  Message|null       $message
      * @throws \RdKafka\Exception
      */
     public function commit(Message $message = null): void
