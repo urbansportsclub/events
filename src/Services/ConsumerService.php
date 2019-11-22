@@ -52,6 +52,6 @@ class ConsumerService
      */
     public function commit(Message $message = null): void
     {
-        $this->consumer->commit($message);
+        $this->consumer->commitAsync($message);
     }
 }
