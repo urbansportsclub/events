@@ -47,10 +47,10 @@ class ConsumerService
     }
 
     /**
-     * @param Message $message
+     * @param Message|null $message
      * @throws \RdKafka\Exception
      */
-    public function commit(Message $message): void
+    public function commit(Message $message = null): void
     {
         $this->consumer->commit($message);
     }
