@@ -47,7 +47,7 @@ class ConsumerService
     }
 
     /**
-     * @param Message $message
+     * @param  Message            $message
      * @throws \RdKafka\Exception
      */
     public function commit(Message $message): void
