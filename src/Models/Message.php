@@ -200,8 +200,9 @@ class Message implements JsonSerializable
 
     /**
      * @param array $data
+     * @return Message
      */
-    public function hydrate(array $data): void
+    public function hydrate(array $data): self
     {
         isset($data['event']) && $this->setEvent($data['event']);
         isset($data['type']) && $this->setType($data['type']);
@@ -209,6 +210,8 @@ class Message implements JsonSerializable
         isset($data['source']) && $this->setSource($data['source']);
         isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);
+
+        return $this;
     }
 
     /**
