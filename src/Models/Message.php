@@ -199,7 +199,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param array $data
+     * @param  array   $data
      * @return Message
      */
     public function hydrate(array $data): self
