@@ -223,7 +223,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $signature
+     * @param  string $signature
      * @return bool
      */
     public function hasValidSignature(string $signature): bool
