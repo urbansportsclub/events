@@ -169,7 +169,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $salt
+     * @param  string  $salt
      * @return Message
      */
     public function setSalt(string $salt): self
