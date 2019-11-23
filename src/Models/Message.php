@@ -221,4 +221,13 @@ class Message implements JsonSerializable
     {
         return sha1(json_encode($this, JSON_FORCE_OBJECT).$this->salt);
     }
+
+    /**
+     * @param string $signature
+     * @return bool
+     */
+    public function hasValidSignature(string $signature): bool
+    {
+        return $signature === $this->getSignature();
+    }
 }
