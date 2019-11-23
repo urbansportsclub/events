@@ -47,7 +47,7 @@ class Message implements JsonSerializable
      * @param string $source
      * @param string $salt
      */
-    public function __construct(string $type, string $source, string $salt)
+    public function __construct(string $type = '', string $source = '', string $salt = '')
     {
         $this->type = $type;
         $this->source = $source;
@@ -164,6 +164,17 @@ class Message implements JsonSerializable
     public function setPayload(string $payload): self
     {
         $this->payload = $payload;
+
+        return $this;
+    }
+
+    /**
+     * @param string $salt
+     * @return Message
+     */
+    public function setSalt(string $salt): self
+    {
+        $this->salt = $salt;
 
         return $this;
     }
