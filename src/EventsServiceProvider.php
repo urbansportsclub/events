@@ -2,6 +2,9 @@
 
 namespace OneFit\Events;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use OneFit\Events\Models\Type;
+use OneFit\Events\Observers\GenericObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -130,6 +133,7 @@ class EventsServiceProvider extends ServiceProvider
                     $this->registerGenericObservers($producer, $type, $domain);
                 }, $domain);
             }
+            $this->registerGenericObserver($domain);
         }
     }
 
@@ -223,6 +227,20 @@ class EventsServiceProvider extends ServiceProvider
     }
 
     /**
+     * @param string $domain
+     */
+    private function registerGenericObserver(string $domain)
+    {
+        $this->getDispatcher()->listen('generic.*', $this->app->make(GenericObserver::class, [
+            'producer' => function () {
+                return $this->app->make(ProducerService::class);
+            },
+            'message' => $this->makeMessage(Type::GENERIC),
+            'domain' => $domain,
+        ]));
+    }
+
+    /**
      * @param  string  $type
      * @return Message
      */
@@ -235,5 +253,10 @@ class EventsServiceProvider extends ServiceProvider
             'source' => $source,
             'salt' => env('MESSAGE_SIGNATURE_SALT', ''),
         ]);
+    }
+
+    private function getDispatcher(): Dispatcher
+    {
+        return $this->app->make(Dispatcher::class);
     }
 }

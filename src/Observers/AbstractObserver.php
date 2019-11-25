@@ -3,6 +3,7 @@
 namespace OneFit\Events\Observers;
 
 use Closure;
+use OneFit\Events\Models\Event;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\QueueableEntity;
@@ -12,10 +13,6 @@ use Illuminate\Contracts\Queue\QueueableEntity;
  */
 abstract class AbstractObserver
 {
-    private const EVENT_CREATED = 'created';
-    private const EVENT_UPDATED = 'updated';
-    private const EVENT_DELETED = 'deleted';
-
     /**
      * @var Closure
      */
@@ -49,7 +46,7 @@ abstract class AbstractObserver
      */
     protected function created(QueueableEntity $entity): void
     {
-        $message = $this->createMessage($entity, self::EVENT_CREATED);
+        $message = $this->createMessage($entity, Event::EVENT_CREATED);
         $this->produce($message);
     }
 
@@ -58,7 +55,7 @@ abstract class AbstractObserver
      */
     protected function updated(QueueableEntity $entity): void
     {
-        $message = $this->createMessage($entity, self::EVENT_UPDATED);
+        $message = $this->createMessage($entity, Event::EVENT_UPDATED);
         $this->produce($message);
     }
 
@@ -67,7 +64,17 @@ abstract class AbstractObserver
      */
     protected function deleted(QueueableEntity $entity): void
     {
-        $message = $this->createMessage($entity, self::EVENT_DELETED);
+        $message = $this->createMessage($entity, Event::EVENT_DELETED);
+        $this->produce($message);
+    }
+
+    /**
+     * @param string $event
+     * @param QueueableEntity $entity
+     */
+    protected function custom(string $event, QueueableEntity $entity): void
+    {
+        $message = $this->createMessage($entity, $event);
         $this->produce($message);
     }
 
