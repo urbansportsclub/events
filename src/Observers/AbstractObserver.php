@@ -69,7 +69,7 @@ abstract class AbstractObserver
     }
 
     /**
-     * @param string $event
+     * @param string          $event
      * @param QueueableEntity $entity
      */
     protected function custom(string $event, QueueableEntity $entity): void
