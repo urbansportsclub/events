@@ -231,7 +231,7 @@ class EventsServiceProvider extends ServiceProvider
      */
     private function registerGenericObserver(string $domain)
     {
-        $this->getDispatcher()->listen('generic.*', $this->app->make(GenericObserver::class, [
+        $this->getDispatcher()->listen("{$domain}.*", $this->app->make(GenericObserver::class, [
             'producer' => function () {
                 return $this->app->make(ProducerService::class);
             },
