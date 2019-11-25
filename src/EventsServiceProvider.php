@@ -2,20 +2,20 @@
 
 namespace OneFit\Events;
 
-use Illuminate\Contracts\Events\Dispatcher;
-use OneFit\Events\Models\Type;
-use OneFit\Events\Observers\GenericObserver;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
+use OneFit\Events\Models\Type;
 use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Events\Dispatcher;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
 use OneFit\Events\Observers\CreatedObserver;
 use OneFit\Events\Observers\DeletedObserver;
+use OneFit\Events\Observers\GenericObserver;
 use OneFit\Events\Observers\UpdatedObserver;
 use Illuminate\Contracts\Foundation\Application;
 
