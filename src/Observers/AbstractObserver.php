@@ -26,19 +26,19 @@ abstract class AbstractObserver
     /**
      * @var string
      */
-    private $domain;
+    private $topic;
 
     /**
      * AbstractObserver constructor.
      * @param Closure $producer
      * @param Message $message
-     * @param string  $domain
+     * @param string  $topic
      */
-    public function __construct(Closure $producer, Message $message, string $domain)
+    public function __construct(Closure $producer, Message $message, string $topic)
     {
         $this->producer = $producer;
         $this->message = $message;
-        $this->domain = $domain;
+        $this->topic = $topic;
     }
 
     /**
@@ -99,12 +99,12 @@ abstract class AbstractObserver
     {
         $producer = $this->producer;
         try {
-            $producer()->produce($message, $this->domain);
+            $producer()->produce($message, $this->topic);
         } catch (\Exception $ex) {
             Log::error($ex->getMessage(), [
                 'exception' => $ex,
                 'message' => json_encode($message, JSON_FORCE_OBJECT),
-                'topic' => $this->domain,
+                'topic' => $this->topic,
             ]);
         }
     }

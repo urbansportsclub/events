@@ -3,9 +3,10 @@
 namespace OneFit\Events\Models;
 
 /**
- * Class Domain.
+ * Class Topic.
  */
-abstract class Domain
+abstract class Topic
 {
     public const MEMBER_DOMAIN = 'member_domain';
+    public const NOTIFICATION_STREAM = 'notification_stream';
 }

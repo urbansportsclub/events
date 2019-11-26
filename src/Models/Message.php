@@ -9,25 +9,25 @@ class Message implements JsonSerializable
     /**
      * @var string|null
      */
-    private $event;
+    private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $type;
 
     /**
      * @var string|null
      */
-    private $id;
+    private $event;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $source;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $connection;
 
@@ -37,22 +37,9 @@ class Message implements JsonSerializable
     private $payload;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $salt;
-
-    /**
-     * Message constructor.
-     * @param string $type
-     * @param string $source
-     * @param string $salt
-     */
-    public function __construct(string $type = '', string $source = '', string $salt = '')
-    {
-        $this->type = $type;
-        $this->source = $source;
-        $this->salt = $salt;
-    }
 
     /**
      * @return string|null
@@ -74,9 +61,9 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSource(): string
+    public function getSource(): ?string
     {
         return $this->source;
     }
@@ -112,9 +99,9 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -189,9 +176,9 @@ class Message implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'event' => $this->event,
-            'type' => $this->type,
             'id' => $this->id,
+            'type' => $this->type,
+            'event' => $this->event,
             'source' => $this->source,
             'connection' => $this->connection,
             'payload' => $this->payload,
@@ -204,9 +191,9 @@ class Message implements JsonSerializable
      */
     public function hydrate(array $data): self
     {
-        isset($data['event']) && $this->setEvent($data['event']);
-        isset($data['type']) && $this->setType($data['type']);
         isset($data['id']) && $this->setId($data['id']);
+        isset($data['type']) && $this->setType($data['type']);
+        isset($data['event']) && $this->setEvent($data['event']);
         isset($data['source']) && $this->setSource($data['source']);
         isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);

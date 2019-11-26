@@ -20,9 +20,12 @@ class MessageTest extends TestCase
         $connection = 'mysql';
         $event = 'MyEventClass';
         $payload = 'data about the event';
-        $message = new Message($type, Source::API, 'secret-salt');
+        $message = new Message();
 
-        $message->setEvent($event)
+        $message->setType($type)
+            ->setSource(Source::API)
+            ->setSalt('secret-salt')
+            ->setEvent($event)
             ->setId($uuid)
             ->setConnection($connection)
             ->setPayload($payload);
@@ -35,9 +38,9 @@ class MessageTest extends TestCase
         $this->assertSame($connection, $message->getConnection());
         $this->assertSame($payload, $message->getPayload());
         $this->assertSame([
-            'event' => $event,
-            'type' => $type,
             'id' => $uuid,
+            'type' => $type,
+            'event' => $event,
             'source' => Source::API,
             'connection' => $connection,
             'payload' => $payload,

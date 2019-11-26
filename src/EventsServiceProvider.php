@@ -5,7 +5,6 @@ namespace OneFit\Events;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
-use OneFit\Events\Models\Type;
 use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Config;
@@ -44,6 +43,7 @@ class EventsServiceProvider extends ServiceProvider
     {
         $this->setupConfig();
         $this->registerObservers();
+        $this->registerListeners();
     }
 
     /**
@@ -127,13 +127,12 @@ class EventsServiceProvider extends ServiceProvider
     {
         $producers = Config::get('events.producers', []);
 
-        foreach ($producers as $domain => $domainProducers) {
-            if (is_array($domainProducers)) {
-                array_walk($domainProducers, function (string $producer, string $type, string $domain) {
-                    $this->registerGenericObservers($producer, $type, $domain);
-                }, $domain);
+        foreach ($producers as $topic => $topicProducers) {
+            if (is_array($topicProducers)) {
+                array_walk($topicProducers, function (string $producer, string $type, string $topic) {
+                    $this->registerGenericObservers($producer, $type, $topic);
+                }, $topic);
             }
-            $this->registerGenericObserver($domain);
         }
     }
 
@@ -161,23 +160,23 @@ class EventsServiceProvider extends ServiceProvider
     /**
      * @param string $producer
      * @param string $type
-     * @param string $domain
+     * @param string $topic
      */
-    private function registerGenericObservers(string $producer, string $type, string $domain): void
+    private function registerGenericObservers(string $producer, string $type, string $topic): void
     {
         if (class_exists($producer)) {
-            $this->registerCreatedObserver($producer, $type, $domain);
-            $this->registerUpdatedObserver($producer, $type, $domain);
-            $this->registerDeletedObserver($producer, $type, $domain);
+            $this->registerCreatedObserver($producer, $type, $topic);
+            $this->registerUpdatedObserver($producer, $type, $topic);
+            $this->registerDeletedObserver($producer, $type, $topic);
         }
     }
 
     /**
      * @param string $producer
      * @param string $type
-     * @param string $domain
+     * @param string $topic
      */
-    private function registerCreatedObserver(string $producer, string $type, string $domain): void
+    private function registerCreatedObserver(string $producer, string $type, string $topic): void
     {
         if (method_exists($producer, 'created')) {
             $producer::created($this->app->make(CreatedObserver::class, [
@@ -185,7 +184,7 @@ class EventsServiceProvider extends ServiceProvider
                     return $this->app->make(ProducerService::class);
                 },
                 'message' => $this->makeMessage($type),
-                'domain' => $domain,
+                'topic' => $topic,
             ]));
         }
     }
@@ -193,9 +192,9 @@ class EventsServiceProvider extends ServiceProvider
     /**
      * @param string $producer
      * @param string $type
-     * @param string $domain
+     * @param string $topic
      */
-    private function registerUpdatedObserver(string $producer, string $type, string $domain): void
+    private function registerUpdatedObserver(string $producer, string $type, string $topic): void
     {
         if (method_exists($producer, 'updated')) {
             $producer::updated($this->app->make(UpdatedObserver::class, [
@@ -203,7 +202,7 @@ class EventsServiceProvider extends ServiceProvider
                     return $this->app->make(ProducerService::class);
                 },
                 'message' => $this->makeMessage($type),
-                'domain' => $domain,
+                'topic' => $topic,
             ]));
         }
     }
@@ -211,9 +210,9 @@ class EventsServiceProvider extends ServiceProvider
     /**
      * @param string $producer
      * @param string $type
-     * @param string $domain
+     * @param string $topic
      */
-    private function registerDeletedObserver(string $producer, string $type, string $domain): void
+    private function registerDeletedObserver(string $producer, string $type, string $topic): void
     {
         if (method_exists($producer, 'deleted')) {
             $producer::deleted($this->app->make(DeletedObserver::class, [
@@ -221,40 +220,48 @@ class EventsServiceProvider extends ServiceProvider
                     return $this->app->make(ProducerService::class);
                 },
                 'message' => $this->makeMessage($type),
-                'domain' => $domain,
+                'topic' => $topic,
             ]));
         }
     }
 
     /**
-     * @param string $domain
+     * @return void
      */
-    private function registerGenericObserver(string $domain)
+    private function registerListeners(): void
     {
-        $this->getDispatcher()->listen("{$domain}.*", $this->app->make(GenericObserver::class, [
-            'producer' => function () {
-                return $this->app->make(ProducerService::class);
-            },
-            'message' => $this->makeMessage(Type::GENERIC),
-            'domain' => $domain,
-        ]));
+        $listeners = Config::get('events.listeners', []);
+
+        foreach ($listeners as $type => $topic) {
+            $this->getDispatcher()->listen("{$type}.*", $this->app->make(GenericObserver::class, [
+                'producer' => function () {
+                    return $this->app->make(ProducerService::class);
+                },
+                'message' => $this->makeMessage($type),
+                'topic' => $topic,
+            ]));
+        }
     }
 
     /**
-     * @param  string  $type
+     * @param string $type
      * @return Message
      */
     private function makeMessage(string $type): Message
     {
         $source = Config::get('events.source', Source::UNDEFINED);
+        $salt = env('MESSAGE_SIGNATURE_SALT', '');
 
-        return $this->app->make(Message::class, [
-            'type' => $type,
-            'source' => $source,
-            'salt' => env('MESSAGE_SIGNATURE_SALT', ''),
-        ]);
+        return $this->app
+            ->make(Message::class)
+            ->setType($type)
+            ->setSource($source)
+            ->setSalt($salt);
     }
 
+    /**
+     * @return Dispatcher
+     */
     private function getDispatcher(): Dispatcher
     {
         return $this->app->make(Dispatcher::class);

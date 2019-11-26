@@ -3,7 +3,7 @@
 namespace OneFit\Events\Tests\Unit\Observers;
 
 use PHPUnit\Framework\TestCase;
-use OneFit\Events\Models\Domain;
+use OneFit\Events\Models\Topic;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 use OneFit\Events\Services\ProducerService;
@@ -46,7 +46,7 @@ class DeletedObserverTest extends TestCase
         $this->messageMock = $this->createMock(Message::class);
         $this->deletedObserver = new DeletedObserver(function () {
             return $this->producerMock;
-        }, $this->messageMock, Domain::MEMBER_DOMAIN);
+        }, $this->messageMock, Topic::MEMBER_DOMAIN);
 
         parent::setUp();
     }
@@ -91,7 +91,7 @@ class DeletedObserverTest extends TestCase
         $this->producerMock
             ->expects($this->once())
             ->method('produce')
-            ->with($this->isInstanceOf(Message::class), Domain::MEMBER_DOMAIN);
+            ->with($this->isInstanceOf(Message::class), Topic::MEMBER_DOMAIN);
 
         call_user_func($this->deletedObserver, $this->entityMock);
     }
@@ -136,7 +136,7 @@ class DeletedObserverTest extends TestCase
         $this->producerMock
             ->expects($this->once())
             ->method('produce')
-            ->with($this->isInstanceOf(Message::class), Domain::MEMBER_DOMAIN)
+            ->with($this->isInstanceOf(Message::class), Topic::MEMBER_DOMAIN)
             ->willThrowException(new \Exception('something went wrong'));
 
         Log::shouldReceive('error')->once();
