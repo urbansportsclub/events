@@ -127,11 +127,11 @@ class EventsServiceProvider extends ServiceProvider
     {
         $producers = Config::get('events.producers', []);
 
-        foreach ($producers as $topic => $topicProducers) {
-            if (is_array($topicProducers)) {
-                array_walk($topicProducers, function (string $producer, string $type, string $topic) {
+        foreach ($producers as $producer => $observers) {
+            if (is_array($observers)) {
+                array_walk($observers, function (string $topic, string $type, string $producer) {
                     $this->registerGenericObservers($producer, $type, $topic);
-                }, $topic);
+                }, $producer);
             }
         }
     }
