@@ -244,7 +244,7 @@ class EventsServiceProvider extends ServiceProvider
     }
 
     /**
-     * @param string $type
+     * @param  string  $type
      * @return Message
      */
     private function makeMessage(string $type): Message
