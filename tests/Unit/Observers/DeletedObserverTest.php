@@ -2,8 +2,8 @@
 
 namespace OneFit\Events\Tests\Unit\Observers;
 
-use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Topic;
+use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 use OneFit\Events\Services\ProducerService;
