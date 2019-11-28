@@ -29,7 +29,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     /**
      * Register bindings in the container.
@@ -74,18 +74,18 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
     private function setConfiguration(Conf $configuration): void
     {
         // Initial list of Kafka brokers
-        $configuration->set('metadata.broker.list', env('METADATA_BROKER_LIST', 'localhost:9092'));
+        $configuration->set('metadata.broker.list', Config::get('events.metadata.broker.list'));
 
         // Default timeout for network requests
-        $configuration->set('socket.timeout.ms', env('SOCKET_TIMEOUT_MS', 60000));
+        $configuration->set('socket.timeout.ms', Config::get('events.socket.timeout.ms'));
 
         // Fetch only the topics in use, reduce the bandwidth
-        $configuration->set('topic.metadata.refresh.sparse', env('TOPIC_METADATA_REFRESH_SPARSE', 'true'));
-        $configuration->set('topic.metadata.refresh.interval.ms', env('TOPIC_METADATA_REFRESH_INTERVAL_MS', 300000));
+        $configuration->set('topic.metadata.refresh.sparse', Config::get('events.topic.metadata.refresh.sparse'));
+        $configuration->set('topic.metadata.refresh.interval.ms', Config::get('topic.metadata.refresh.interval.ms'));
 
         // Signal that librdkafka will use to quickly terminate on rd_kafka_destroy()
-        pcntl_sigprocmask(SIG_BLOCK, [env('INTERNAL_TERMINATION_SIGNAL', 29)]);
-        $configuration->set('internal.termination.signal', env('INTERNAL_TERMINATION_SIGNAL', 29));
+        pcntl_sigprocmask(SIG_BLOCK, [Config::get('events.internal.termination.signal')]);
+        $configuration->set('internal.termination.signal', Config::get('events.internal.termination.signal'));
     }
 
     /**
@@ -117,10 +117,10 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
             // Set where to start consuming messages when there is no initial offset in
             // offset store or the desired offset is out of range.
             // 'smallest': start from the beginning
-            $configuration->set('auto.offset.reset', env('AUTO_OFFSET_RESET', 'smallest'));
+            $configuration->set('auto.offset.reset', Config::get('events.auto.offset.reset'));
 
             // Automatically and periodically commit offsets in the background.
-            $configuration->set('enable.auto.commit', env('ENABLE_AUTO_COMMIT', 'true'));
+            $configuration->set('enable.auto.commit', Config::get('events.enable.auto.commit'));
 
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
@@ -258,7 +258,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
     private function makeMessage(string $type): Message
     {
         $source = Config::get('events.source', Source::UNDEFINED);
-        $salt = env('MESSAGE_SIGNATURE_SALT', '');
+        $salt = Config::get('events.message.signature.salt');
 
         return $this->app
             ->make(Message::class)
