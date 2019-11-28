@@ -2,7 +2,7 @@
 
 namespace Illuminate\Contracts\Support;
 
-interface deferrable_provider
+interface DeferrableProvider
 {
     /**
      * Get the services provided by the provider.
