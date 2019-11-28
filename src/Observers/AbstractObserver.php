@@ -74,7 +74,8 @@ abstract class AbstractObserver
      */
     protected function custom(string $event, QueueableEntity $entity): void
     {
-        $message = $this->createMessage($entity, $event);
+        $split = explode('.', $event);
+        $message = $this->createMessage($entity, end($split));
         $this->produce($message);
     }
 
