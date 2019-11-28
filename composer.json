@@ -15,6 +15,9 @@
         "mockery/mockery": "^1.2"
     },
     "autoload": {
+        "files": [
+            "bootstrap/helpers.php"
+        ],
         "psr-4": {
             "OneFit\\Events\\": "src/"
         }
