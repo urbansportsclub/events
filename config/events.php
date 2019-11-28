@@ -19,7 +19,7 @@ return [
     'metadata' => [
         'broker' => [
             'list' => env('METADATA_BROKER_LIST', 'localhost:9092'),
-        ]
+        ],
     ],
     'socket' => [
         'timeout' => [
