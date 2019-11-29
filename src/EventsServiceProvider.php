@@ -258,7 +258,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
     private function makeMessage(string $type): Message
     {
         $source = Config::get('events.source', Source::UNDEFINED);
-        $salt = Config::get('events.message.signature.salt');
+        $salt = Config::get('events.message.signature.salt', '');
 
         return $this->app
             ->make(Message::class)
