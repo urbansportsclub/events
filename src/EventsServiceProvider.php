@@ -16,7 +16,6 @@ use OneFit\Events\Observers\CreatedObserver;
 use OneFit\Events\Observers\DeletedObserver;
 use OneFit\Events\Observers\GenericObserver;
 use OneFit\Events\Observers\UpdatedObserver;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
 
 /**
@@ -93,7 +92,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
      */
     private function registerProducer(): void
     {
-        $this->app->singleton(ProducerService::class, function (Application $app) {
+        $this->app->singleton(ProducerService::class, function ($app) {
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
 
@@ -108,7 +107,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
      */
     private function registerConsumer(): void
     {
-        $this->app->bind(ConsumerService::class, function (Application $app, array $params = []) {
+        $this->app->bind(ConsumerService::class, function ($app, array $params = []) {
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
 
