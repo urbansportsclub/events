@@ -81,7 +81,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
 
         // Fetch only the topics in use, reduce the bandwidth
         $configuration->set('topic.metadata.refresh.sparse', Config::get('events.topic.metadata.refresh.sparse'));
-        $configuration->set('topic.metadata.refresh.interval.ms', Config::get('topic.metadata.refresh.interval.ms'));
+        $configuration->set('topic.metadata.refresh.interval.ms', Config::get('events.topic.metadata.refresh.interval.ms'));
 
         // Signal that librdkafka will use to quickly terminate on rd_kafka_destroy()
         pcntl_sigprocmask(SIG_BLOCK, [Config::get('events.internal.termination.signal')]);
