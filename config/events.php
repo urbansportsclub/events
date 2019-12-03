@@ -23,11 +23,11 @@ return [
     ],
     'socket' => [
         'timeout' => [
-            'ms' => env('SOCKET_TIMEOUT_MS', 1000),
+            'ms' => env('SOCKET_TIMEOUT_MS', 60000),
         ],
         'blocking' => [
             'max' => [
-                'ms' => env('SOCKET_BLOCKING_MAX_MS', 1000),
+                'ms' => env('SOCKET_BLOCKING_MAX_MS', 60000),
             ],
         ],
     ],
@@ -61,7 +61,7 @@ return [
             'salt' => env('MESSAGE_SIGNATURE_SALT', ''),
         ],
         'timeout' => [
-            'ms' => env('MESSAGE_TIMEOUT_MS', 1000),
+            'ms' => env('MESSAGE_TIMEOUT_MS', 3000),
         ],
     ],
     'flush' => [
