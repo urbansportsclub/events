@@ -4,7 +4,6 @@ namespace OneFit\Events\Services;
 
 use RdKafka\Producer;
 use OneFit\Events\Models\Message;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class ProducerService.
@@ -24,7 +23,7 @@ class ProducerService
     /**
      * ProducerService constructor.
      * @param Producer $producer
-     * @param int $retries
+     * @param int      $retries
      */
     public function __construct(Producer $producer, int $retries)
     {
