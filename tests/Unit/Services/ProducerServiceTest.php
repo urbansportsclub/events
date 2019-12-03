@@ -2,13 +2,13 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
-use Illuminate\Support\Facades\Config;
-use Mockery\MockInterface;
 use RdKafka\Producer;
+use Mockery\MockInterface;
 use RdKafka\ProducerTopic;
 use OneFit\Events\Models\Topic;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
+use Illuminate\Support\Facades\Config;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;
 
@@ -50,10 +50,9 @@ class ProducerServiceTest extends TestCase
         $this->producerMock = $this->createMock(Producer::class);
         $this->topicMock = $this->createMock(ProducerTopic::class);
         $this->messageMock = $this->createMock(Message::class);
-        $this->configStub = \Mockery::mock('alias:' . Config::class);
+        $this->configStub = \Mockery::mock('alias:'.Config::class);
 
         $this->configStub->shouldReceive('get')->andReturn(3, 10000);
-
 
         $this->producerService = new ProducerService($this->producerMock);
 

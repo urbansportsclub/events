@@ -180,7 +180,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $error
+     * @param  string  $error
      * @return Message
      */
     public function setError(string $error): self
@@ -195,7 +195,7 @@ class Message implements JsonSerializable
      */
     public function hasError(): bool
     {
-        return !is_null($this->error);
+        return ! is_null($this->error);
     }
 
     /**
