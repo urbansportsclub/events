@@ -2,10 +2,10 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
-use OneFit\Events\Models\Message;
-use RdKafka\Message as KafkaMessage;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
+use OneFit\Events\Models\Message;
+use RdKafka\Message as KafkaMessage;
 use OneFit\Events\Services\ConsumerService;
 use PHPUnit\Framework\MockObject\MockClass;
 
@@ -67,7 +67,6 @@ class ConsumerServiceTest extends TestCase
             ->method('consume')
             ->with(120000)
             ->willReturn($this->kafkaMessageMock);
-
 
         $response = $this->consumerService->consume(120000);
 
