@@ -65,9 +65,6 @@ return [
         ],
     ],
     'flush' => [
-        'timeout' => [
-            'ms' => env('FLUSH_TIMEOUT_MS', 1000),
-        ],
         'retries' => env('FLUSH_RETRIES', 3),
     ],
 ];

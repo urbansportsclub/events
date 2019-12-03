@@ -3,12 +3,10 @@
 namespace OneFit\Events\Tests\Unit\Services;
 
 use RdKafka\Producer;
-use Mockery\MockInterface;
 use RdKafka\ProducerTopic;
 use OneFit\Events\Models\Topic;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
-use Illuminate\Support\Facades\Config;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;
 
@@ -33,11 +31,6 @@ class ProducerServiceTest extends TestCase
     private $messageMock;
 
     /**
-     * @var Config|MockInterface
-     */
-    private $configStub;
-
-    /**
      * @var ProducerService
      */
     private $producerService;
@@ -50,11 +43,8 @@ class ProducerServiceTest extends TestCase
         $this->producerMock = $this->createMock(Producer::class);
         $this->topicMock = $this->createMock(ProducerTopic::class);
         $this->messageMock = $this->createMock(Message::class);
-        $this->configStub = \Mockery::mock('alias:'.Config::class);
 
-        $this->configStub->shouldReceive('get')->andReturn(3, 10000);
-
-        $this->producerService = new ProducerService($this->producerMock);
+        $this->producerService = new ProducerService($this->producerMock, 3);
 
         parent::setUp();
     }
@@ -80,7 +70,7 @@ class ProducerServiceTest extends TestCase
         $this->producerMock
             ->expects($this->once())
             ->method('flush')
-            ->with(10000)
+            ->with(1000)
             ->willReturn(RD_KAFKA_RESP_ERR_NO_ERROR);
 
         $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
@@ -107,7 +97,7 @@ class ProducerServiceTest extends TestCase
         $this->producerMock
             ->expects($this->exactly(2))
             ->method('flush')
-            ->with(10000)
+            ->with(1000)
             ->willReturnOnConsecutiveCalls(
                 RD_KAFKA_RESP_ERR_UNKNOWN,
                 RD_KAFKA_RESP_ERR_NO_ERROR

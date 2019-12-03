@@ -17,12 +17,19 @@ class ProducerService
     private $producer;
 
     /**
+     * @var int
+     */
+    private $retries;
+
+    /**
      * ProducerService constructor.
      * @param Producer $producer
+     * @param int $retries
      */
-    public function __construct(Producer $producer)
+    public function __construct(Producer $producer, int $retries)
     {
         $this->producer = $producer;
+        $this->retries = $retries;
     }
 
     /**
@@ -34,23 +41,22 @@ class ProducerService
         $topic = $this->producer->newTopic($topic);
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($message, JSON_FORCE_OBJECT), $message->getSignature());
         $this->producer->poll(0);
-        $this->flushProducer(Config::get('events.flush.retries'));
+        $this->flushProducer();
     }
 
     /**
-     * @param int $retries
      * @param int $counter
      */
-    private function flushProducer(int $retries, int $counter = 0): void
+    private function flushProducer(int $counter = 0): void
     {
-        $response = $this->producer->flush(Config::get('events.flush.timeout.ms'));
+        $response = $this->producer->flush(1000);
 
-        if ($counter >= $retries) {
+        if ($counter >= $this->retries) {
             throw new \RuntimeException('Was unable to flush, messages might be lost!', $response);
         }
 
         if (RD_KAFKA_RESP_ERR_NO_ERROR !== $response) {
-            $this->flushProducer($retries, ++$counter);
+            $this->flushProducer(++$counter);
         }
     }
 }

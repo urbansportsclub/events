@@ -103,7 +103,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
 
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
-            return new ProducerService($producer);
+            return new ProducerService($producer, Config::get('events.flush.retries'));
         });
     }
 
