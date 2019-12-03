@@ -2,8 +2,8 @@
 
 namespace OneFit\Events\Services;
 
-use OneFit\Events\Models\Message;
 use RdKafka\KafkaConsumer;
+use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -24,7 +24,7 @@ class ConsumerService
     /**
      * ConsumerService constructor.
      * @param KafkaConsumer $consumer
-     * @param Message $message
+     * @param Message       $message
      */
     public function __construct(KafkaConsumer $consumer, Message $message)
     {
@@ -45,9 +45,9 @@ class ConsumerService
     }
 
     /**
-     * @param int $timeout
-     * @return Message
+     * @param  int                $timeout
      * @throws \RdKafka\Exception
+     * @return Message
      */
     public function consume(int $timeout): Message
     {

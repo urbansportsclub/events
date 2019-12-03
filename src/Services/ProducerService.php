@@ -2,9 +2,9 @@
 
 namespace OneFit\Events\Services;
 
-use Illuminate\Support\Facades\Config;
 use RdKafka\Producer;
 use OneFit\Events\Models\Message;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Class ProducerService.
