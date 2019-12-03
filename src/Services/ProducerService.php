@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Services;
 
+use Illuminate\Support\Facades\Config;
 use RdKafka\Producer;
 use OneFit\Events\Models\Message;
 
@@ -33,7 +34,7 @@ class ProducerService
         $topic = $this->producer->newTopic($topic);
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($message, JSON_FORCE_OBJECT), $message->getSignature());
         $this->producer->poll(0);
-        $this->flushProducer(env('FLUSH_RETRIES', 10));
+        $this->flushProducer(Config::get('events.flush.retries'));
     }
 
     /**
@@ -42,7 +43,7 @@ class ProducerService
      */
     private function flushProducer(int $retries, int $counter = 0): void
     {
-        $response = $this->producer->flush(env('FLUSH_TIMEOUT_MS', 10000));
+        $response = $this->producer->flush(Config::get('events.flush.timeout.ms'));
 
         if ($counter >= $retries) {
             throw new \RuntimeException('Was unable to flush, messages might be lost!', $response);

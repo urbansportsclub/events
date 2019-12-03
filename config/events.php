@@ -23,7 +23,12 @@ return [
     ],
     'socket' => [
         'timeout' => [
-            'ms' => env('SOCKET_TIMEOUT_MS', 60000),
+            'ms' => env('SOCKET_TIMEOUT_MS', 1000),
+        ],
+        'blocking' => [
+            'max' => [
+                'ms' => env('SOCKET_BLOCKING_MAX_MS', 1000),
+            ],
         ],
     ],
     'topic' => [
@@ -55,5 +60,14 @@ return [
         'signature' => [
             'salt' => env('MESSAGE_SIGNATURE_SALT', ''),
         ],
+        'timeout' => [
+            'ms' => env('MESSAGE_TIMEOUT_MS', 1000),
+        ],
+    ],
+    'flush' => [
+        'timeout' => [
+            'ms' => env('FLUSH_TIMEOUT_MS', 1000),
+        ],
+        'retries' => env('FLUSH_RETRIES', 3),
     ],
 ];

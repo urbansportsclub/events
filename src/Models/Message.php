@@ -42,6 +42,11 @@ class Message implements JsonSerializable
     private $salt;
 
     /**
+     * @var string|null
+     */
+    private $error;
+
+    /**
      * @return string|null
      */
     public function getId(): ?string
@@ -164,6 +169,33 @@ class Message implements JsonSerializable
         $this->salt = $salt;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getError(): ?string
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param string $error
+     * @return Message
+     */
+    public function setError(string $error): self
+    {
+        $this->error = $error;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasError(): bool
+    {
+        return !is_null($this->error);
     }
 
     /**

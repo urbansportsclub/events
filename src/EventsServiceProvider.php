@@ -77,6 +77,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
 
         // Default timeout for network requests
         $configuration->set('socket.timeout.ms', Config::get('events.socket.timeout.ms'));
+        $configuration->set('socket.blocking.max.ms', Config::get('events.socket.blocking.max.ms'));
 
         // Fetch only the topics in use, reduce the bandwidth
         $configuration->set('topic.metadata.refresh.sparse', Config::get('events.topic.metadata.refresh.sparse'));
@@ -95,6 +96,8 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
         $this->app->singleton(ProducerService::class, function ($app) {
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
+
+            $configuration->set('message.timeout.ms', Config::get('events.message.timeout.ms'));
 
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
@@ -123,7 +126,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
 
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
-            return new ConsumerService($consumer);
+            return new ConsumerService($consumer, $app->make(Message::class));
         });
     }
 

@@ -2,7 +2,8 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
-use RdKafka\Message;
+use OneFit\Events\Models\Message;
+use RdKafka\Message as KafkaMessage;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Services\ConsumerService;
@@ -17,6 +18,11 @@ class ConsumerServiceTest extends TestCase
      * @var KafkaConsumer|MockClass
      */
     private $consumerMock;
+
+    /**
+     * @var KafkaMessage|MockClass
+     */
+    private $kafkaMessageMock;
 
     /**
      * @var Message|MockClass
@@ -34,9 +40,10 @@ class ConsumerServiceTest extends TestCase
     public function setUp(): void
     {
         $this->consumerMock = $this->createMock(KafkaConsumer::class);
+        $this->kafkaMessageMock = $this->createMock(KafkaMessage::class);
         $this->messageMock = $this->createMock(Message::class);
 
-        $this->consumerService = new ConsumerService($this->consumerMock);
+        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock);
     }
 
     /** @test */
@@ -59,10 +66,11 @@ class ConsumerServiceTest extends TestCase
             ->expects($this->once())
             ->method('consume')
             ->with(120000)
-            ->willReturn($this->messageMock);
+            ->willReturn($this->kafkaMessageMock);
+
 
         $response = $this->consumerService->consume(120000);
 
-        $this->assertSame($this->messageMock, $response);
+        $this->assertEquals($this->messageMock, $response);
     }
 }
