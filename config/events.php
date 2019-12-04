@@ -23,11 +23,11 @@ return [
     ],
     'socket' => [
         'timeout' => [
-            'ms' => env('SOCKET_TIMEOUT_MS', 60000),
+            'ms' => env('SOCKET_TIMEOUT_MS', 3000),
         ],
         'blocking' => [
             'max' => [
-                'ms' => env('SOCKET_BLOCKING_MAX_MS', 60000),
+                'ms' => env('SOCKET_BLOCKING_MAX_MS', 50),
             ],
         ],
     ],
@@ -66,5 +66,12 @@ return [
     ],
     'flush' => [
         'retries' => env('FLUSH_RETRIES', 3),
+    ],
+    'queue' => [
+        'buffering' => [
+            'max' => [
+                'ms' => env('QUEUE_BUFFERING_MAX_MS', 50),
+            ],
+        ],
     ],
 ];

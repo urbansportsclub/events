@@ -100,6 +100,7 @@ class EventsServiceProvider extends ServiceProvider implements DeferrableProvide
             // Local message timeout. This value is only enforced locally and
             // limits the time a produced message waits for successful delivery.
             $configuration->set('message.timeout.ms', Config::get('events.message.timeout.ms'));
+            $configuration->set('queue.buffering.max.ms', Config::get('events.queue.buffering.max.ms'));
 
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
