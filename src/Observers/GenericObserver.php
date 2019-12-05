@@ -7,11 +7,15 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 class GenericObserver extends AbstractObserver
 {
     /**
-     * @param string          $event
-     * @param QueueableEntity $entity
+     * @param string $event
+     * @param array $data
      */
-    public function __invoke(string $event, QueueableEntity $entity): void
+    public function __invoke(string $event, array $data): void
     {
-        $this->custom($event, $entity);
+        $entity = reset($data);
+        if ($entity instanceof QueueableEntity) {
+            $split = explode('.', $event);
+            $this->custom(end($split), $entity);
+        }
     }
 }
