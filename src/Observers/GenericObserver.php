@@ -8,7 +8,7 @@ class GenericObserver extends AbstractObserver
 {
     /**
      * @param string $event
-     * @param array $data
+     * @param array  $data
      */
     public function __invoke(string $event, array $data): void
     {
