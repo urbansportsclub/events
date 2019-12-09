@@ -16,20 +16,12 @@ use OneFit\Events\Observers\CreatedObserver;
 use OneFit\Events\Observers\DeletedObserver;
 use OneFit\Events\Observers\GenericObserver;
 use OneFit\Events\Observers\UpdatedObserver;
-use Illuminate\Contracts\Support\DeferrableProvider;
 
 /**
  * Class EventsServiceProvider.
  */
-class EventsServiceProvider extends ServiceProvider implements DeferrableProvider
+class EventsServiceProvider extends ServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * Register bindings in the container.
      *
