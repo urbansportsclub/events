@@ -10,6 +10,7 @@ abstract class Type
     public const NOTIFICATION = 'notification';
     public const MEMBER = 'member';
     public const AUTHENTICATABLE = 'authenticatable';
+    public const TOKENS = 'tokens';
     public const PERIOD = 'period';
     public const ORDER = 'order';
     public const RECURRING = 'recurring';
