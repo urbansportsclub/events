@@ -39,12 +39,12 @@ class EventsServiceProviderTest extends TestCase
     public function can_register_bindings()
     {
         $this->applicationMock
-            ->expects($this->once())
-            ->method('singleton')
+            ->expects($this->at(0))
+            ->method('bind')
             ->with(ProducerService::class, $this->isType('callable'));
 
         $this->applicationMock
-            ->expects($this->once())
+            ->expects($this->at(1))
             ->method('bind')
             ->with(ConsumerService::class, $this->isType('callable'));
 
