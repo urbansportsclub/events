@@ -85,7 +85,7 @@ class EventsServiceProvider extends ServiceProvider
      */
     private function registerProducer(): void
     {
-        $this->app->singleton(ProducerService::class, function ($app) {
+        $this->app->bind(ProducerService::class, function ($app) {
             $configuration = $app->make(Conf::class);
             $this->setConfiguration($configuration);
 
@@ -93,6 +93,8 @@ class EventsServiceProvider extends ServiceProvider
             // limits the time a produced message waits for successful delivery.
             $configuration->set('message.timeout.ms', Config::get('events.message.timeout.ms'));
             $configuration->set('queue.buffering.max.ms', Config::get('events.queue.buffering.max.ms'));
+            // Indicate if the broker should send response/ack to the client
+            $configuration->set('request.required.acks', Config::get('events.request.required.acks'));
 
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 

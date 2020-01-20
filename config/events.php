@@ -74,4 +74,9 @@ return [
             ],
         ],
     ],
+    'request' => [
+        'required' => [
+            'acks' => env('REQUEST_REQUIRED_ACKS', -1),
+        ],
+    ],
 ];
