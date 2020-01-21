@@ -19,11 +19,11 @@ Package uses [arnaud-lb/php-rdkafka](https://github.com/arnaud-lb/php-rdkafka) l
 List of the available configuration parameters with their description can be found in [configuration overview](docs/CONFIGURATION.md).
 
 ## Installation
-To get started, you just need to pull the onefit/events package into your application.
+To get started, you just need to pull *onefit/events* package into your application.
 
 For the laravel applications the service is auto-discoverable, so beside pulling the package and specifying application events, there is not much to do.
 
-For lumen applications, both *EventsServiceProvider* and *events* configuration should be manually registered inside of the *bootstrap/app.php* for given lumen app.
+For lumen applications, both *EventsServiceProvider* and *events* configuration should be manually registered inside of the *bootstrap/app.php* for given lumen application.
 
 In a nutshell, the package is plug-and-play. After you pull the package inside of your app (most likely using ```composer update onefit/events```), the only thing you need to do is to specify which of the events your application should produce. For this purpose we extended the existing laravel functionality of the observers and listeners.
 
@@ -44,7 +44,7 @@ return [
 ];
 ```
 
-What we have in the example above, is what we refer to as generic observers. While source is hopefully self-explanatory, the producers and listeners need at least some explanation, hence the section on its own.
+What we have in the example above, is what we refer to as generic observers. While *source* is hopefully self-explanatory, *producers* and *listeners* require at least some explanation, hence the sections on their own.
 
 ## Producers
 The producers configuration is part of configuration where we are mapping our project models with the type of the event which will be produced. This is done so we can have loose coupling between our application domain and the potential consumers, which do not necessarily need to know about our domain models and would instead rather focus on the occurred event.
@@ -60,7 +60,7 @@ Listeners are similar but not the same as producers. Their primary intention was
 
 The structure is as follows ```event_type_to_listen => topic_name```
 
-What is happening in the background, during the initialisation of the *EventsServiceProvider* we are registering custom observer to listen only to events of given type and produce them to kafka stream once they occur.
+What is happening in the background, is that during the initialisation of the *EventsServiceProvider* we are registering custom observer to listen only to events of given type and produce them to kafka stream once they occur.
 
 With the given configuration example, we are able to produce a custom event inside of laravel/lumen app as following:
 
