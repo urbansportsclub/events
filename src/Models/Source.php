@@ -2,7 +2,11 @@
 
 namespace OneFit\Events\Models;
 
-abstract class Source
+/**
+ * Interface Source
+ * @package OneFit\Events\Models
+ */
+interface Source
 {
     public const API = 'api';
     public const AUTH = 'auth';

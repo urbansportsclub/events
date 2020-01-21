@@ -2,7 +2,11 @@
 
 namespace OneFit\Events\Models;
 
-abstract class Type
+/**
+ * Interface Type
+ * @package OneFit\Events\Models
+ */
+interface Type
 {
     public const CHECK_IN = 'check_in';
     public const FRIEND_CONNECTION = 'friend_connection';

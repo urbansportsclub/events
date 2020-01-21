@@ -3,9 +3,10 @@
 namespace OneFit\Events\Models;
 
 /**
- * Class Event.
+ * Interface Event
+ * @package OneFit\Events\Models
  */
-abstract class Event
+interface Event
 {
     public const EVENT_CREATED = 'created';
     public const EVENT_UPDATED = 'updated';
