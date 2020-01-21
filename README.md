@@ -71,3 +71,6 @@ With the given configuration example, we are able to produce a custom event insi
 Hopefully this is enough to get you going, if you would like to find out the magic happening in the background, please checkout the implementation inside of the events package.
 
 **Note:** We did not implemented all of the available configuration settings, since at this point we don’t have a need to navigate from default values. To see a list of all of the available configuration parameters, click [here](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
+
+## License
+onefit/events is available under the MIT license. See the [LICENSE](LICENSE) file for more information.
