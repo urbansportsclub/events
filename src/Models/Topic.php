@@ -3,8 +3,7 @@
 namespace OneFit\Events\Models;
 
 /**
- * Interface Topic
- * @package OneFit\Events\Models
+ * Interface Topic.
  */
 interface Topic
 {
