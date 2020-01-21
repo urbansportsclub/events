@@ -1,23 +1,73 @@
-# OneFit Events
+# Laravel/Lumen 5.x 6.x Kafka Events
 
 [![Build Status](https://travis-ci.com/onefit/base.svg?token=yyNHsRRTPoEN35wt46sb&branch=master)](https://travis-ci.com/onefit/base)
 [![StyleCI](https://styleci.io/repos/221408130/shield?branch=master)](https://styleci.io/repos/221408130)
 
-This package contains services to produce and consume events using kafka stream processing
+This package contains services to produce and consume events using kafka stream processing. The library supports both laravel 5.x and 6.x versions.
 
-## Configuration
-| Param | Description | Type | Default |
-| --- | --- | --- | --- |
-| `METADATA_BROKER_LIST` | Initial list of brokers as a CSV list of broker host or host:port. | string | localhost:9092 |
-| `FLUSH_RETRIES` | Specifies the maximum amount of flush retries. | integer | 3 |
-| `TOPIC_METADATA_REFRESH_INTERVAL_MS` | Period of time in milliseconds at which topic and broker metadata is refreshed in order to proactively discover any new brokers, topics, partitions or partition leader changes. Use -1 to disable the intervalled refresh (not recommended). If there are no locally referenced topics (no topic objects created, no messages produced, no subscription or no assignment) then only the broker list will be refreshed every interval but no more often than every 10s. | integer | 300000 |
-| `TOPIC_METADATA_REFRESH_SPARSE` | Sparse metadata requests (consumes less network bandwidth) | boolean | true |
-| `AUTO_OFFSET_RESET` | Action to take when there is no initial offset in offset store or the desired offset is out of range: 'smallest','earliest' - automatically reset the offset to the smallest offset, 'largest','latest' - automatically reset the offset to the largest offset, 'error' - trigger an error which is retrieved by consuming messages and checking 'message->err'. | enum (smallest, earliest, beginning, largest, latest, end, error) | smallest
-| `INTERNAL_TERMINATION_SIGNAL` | Signal that librdkafka will use to quickly terminate on rd_kafka_destroy(). If this signal is not set then there will be a delay before rd_kafka_wait_destroyed() returns true as internal threads are timing out their system calls. If this signal is set however the delay will be minimal. The application should mask this signal as an internal signal handler is installed. | integer | 29 |
-| `SOCKET_TIMEOUT_MS` | Default timeout for network requests. Producer: ProduceRequests will use the lesser value of socket.timeout.ms and remaining message.timeout.ms for the first message in the batch. Consumer: FetchRequests will use fetch.wait.max.ms + socket.timeout.ms. Admin: Admin requests will use socket.timeout.ms or explicitly set rd_kafka_AdminOptions_set_operation_timeout() value. | integer | 3000 |
-| `ENABLE_AUTO_COMMIT` | Automatically and periodically commit offsets in the background. Note: setting this to false does not prevent the consumer from fetching previously committed start offsets. To circumvent this behaviour set specific start offsets per partition in the call to assign(). | boolean | true |
-| `SOCKET_BLOCKING_MAX_MS` | Default timeout for network requests. Producer: ProduceRequests will use the lesser value of socket.timeout.ms and remaining message.timeout.ms for the first message in the batch. Consumer: FetchRequests will use fetch.wait.max.ms + socket.timeout.ms. Admin: Admin requests will use socket.timeout.ms or explicitly set rd_kafka_AdminOptions_set_operation_timeout() value. | integer | 50 |
-| `MESSAGE_SIGNATURE_SALT` | Local message salt. Signing messages with provided salt will allow consumer to validate the signature if the salt is shared among producer and consumer outside of stream | string | (empty) |
-| `MESSAGE_TIMEOUT_MS` | Local message timeout. This value is only enforced locally and limits the time a produced message waits for successful delivery. A time of 0 is infinite. This is the maximum time librdkafka may use to deliver a message (including retries). Delivery error occurs when either the retry count or the message timeout are exceeded. | integer | 3000 |
-| `QUEUE_BUFFERING_MAX_MS` | Delay in milliseconds to wait for messages in the producer queue to accumulate before constructing message batches (MessageSets) to transmit to brokers. A higher value allows larger and more effective (less overhead, improved compression) batches of messages to accumulate at the expense of increased message delivery latency. | float | 50 |
-| `REQUEST_REQUIRED_ACKS` | This field indicates the number of acknowledgements the leader broker must receive from ISR brokers before responding to the request: 0=Broker does not send any response/ack to client, -1 or all=Broker will block until message is committed by all in sync replicas (ISRs). If there are less than min.insync.replicas (broker configuration) in the ISR set the produce request will fail. | integer | -1 |
+Package uses [arnaud-lb/php-rdkafka](https://github.com/arnaud-lb/php-rdkafka) library which is a php extension wrapper around [edenhill/librdkafka](https://github.com/edenhill/librdkafka) library.
+
+## Package requirements
+* librdkafka >= 0.11.x.
+* php >= 7.1
+* ext-rdkafka
+* ext-pcntl
+* ext-json
+
+**Important:** Events package is expecting that you have at least defined env variable *METADATA_BROKER_LIST* which is as its name states, a comma-separated list of the kafka brokers for your application to use, e.g. ```broker-0.localhost:9092,broker-1.localhost:9092```
+
+List of the available configuration parameters with their description can be found in [configuration overview](docs/CONFIGURATION.md).
+
+## Installation
+To get started, you just need to pull the onefit/events package into your application.
+
+For the laravel applications the service is auto-discoverable, so beside pulling the package and specifying application events, there is not much to do.
+
+For lumen applications, both *EventsServiceProvider* and *events* configuration should be manually registered inside of the *bootstrap/app.php* for given lumen app.
+
+In a nutshell, the package is plug-and-play. After you pull the package inside of your app (most likely using ```composer update onefit/events```), the only thing you need to do is to specify which of the events your application should produce. For this purpose we extended the existing laravel functionality of the observers and listeners.
+
+The basic configuration would look something like this (*events.php*).
+```
+<?php
+
+return [
+    'producers' => [
+        \MyModels\Member::class => [
+            'member' => 'member_domain',
+        ],
+    ],
+    'listeners' => [
+        'notifications' => 'member_domain',
+    ],
+    'source' => 'my-awesome-app',
+];
+```
+
+What we have in the example above, is what we refer to as generic observers. While source is hopefully self-explanatory, the producers and listeners need at least some explanation, hence the section on its own.
+
+## Producers
+The producers configuration is part of configuration where we are mapping our project models with the type of the event which will be produced. This is done so we can have loose coupling between our application domain and the potential consumers, which do not necessarily need to know about our domain models and would instead rather focus on the occurred event.
+
+The structure is as follows ```domain_model => [ common_event_type => topic_name ]```
+
+If you dive into implementation, you will see that when initialising *EventServiceProvider*, for every *domain_model* specified inside of the producers configuration, we are registering generic observers to listen for the following events: *created*, *deleted*, *updated* for the given domain model. We are not going to explain laravel events, since this is something that a reader should already be aware of, but in case you would like to refresh your memory, please follow this [link](https://laravel.com/docs/5.8/eloquent#events).
+
+One of the good things about this kind of behaviour is that these events, or more precisely observers registered to handle them, are non blocking, meaning that if the error occurs while producing an event, the initial process that caused the event will not be stopped, nor the data will be lost. For given configuration, every domain model specified will have a generic observer attached, which will listen the events mentioned above.
+
+## Listeners
+Listeners are similar but not the same as producers. Their primary intention was to give us an ability to produce custom events, not related to a specific domain model or its activity. 
+
+The structure is as follows ```event_type_to_listen => topic_name```
+
+What is happening in the background, during the initialisation of the *EventsServiceProvider* we are registering custom observer to listen only to events of given type and produce them to kafka stream once they occur.
+
+With the given configuration example, we are able to produce a custom event inside of laravel/lumen app as following:
+
+```event('notifications.user_paid', $myUserInstance);```
+
+**Important:** Since the events package was mainly build for laravel/lumen, the model sent with the event, as all of the other eloquent models, must be an instance of *Illuminate\Contracts\Queue\QueueableEntity* interface which is a part of [illuminate/support](https://github.com/illuminate/support) package.
+
+Hopefully this is enough to get you going, if you would like to find out the magic happening in the background, please checkout the implementation inside of the events package.
+
+**Note:** We did not implemented all of the available configuration settings, since at this point we don’t have a need to navigate from default values. To see a list of all of the available configuration parameters, click [here](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
