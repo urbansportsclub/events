@@ -1,7 +1,16 @@
 {
     "name": "onefit/events",
     "description": "Events handling with kafka",
+    "keywords": ["laravel", "lumen", "events", "kafka"],
     "type": "library",
+    "authors": [
+        {
+            "name": "Stefan Djokic",
+            "email": "stefan@one.fit",
+            "homepage": "https://one.fit",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": ">=7.1",
         "ext-rdkafka": "^4.0",
@@ -34,6 +43,6 @@
             ]
         }
     },
-    "license": "Proprietary",
+    "license": "MIT",
     "minimum-stability": "stable"
 }
