@@ -5,8 +5,7 @@ namespace OneFit\Events\Models;
 use JsonSerializable;
 
 /**
- * Class Message
- * @package OneFit\Events\Models
+ * Class Message.
  */
 class Message implements JsonSerializable
 {
