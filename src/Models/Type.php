@@ -3,8 +3,7 @@
 namespace OneFit\Events\Models;
 
 /**
- * Interface Type
- * @package OneFit\Events\Models
+ * Interface Type.
  */
 interface Type
 {
