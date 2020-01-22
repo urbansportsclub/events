@@ -117,9 +117,10 @@ class EventsServiceProvider extends ServiceProvider
             // offset store or the desired offset is out of range.
             // 'smallest': start from the beginning
             $configuration->set('auto.offset.reset', Config::get('events.auto.offset.reset'));
-
             // Automatically and periodically commit offsets in the background.
             $configuration->set('enable.auto.commit', Config::get('events.enable.auto.commit'));
+            // Automatically store offset of last message provided to application.
+            $configuration->set('enable.auto.offset.store', Config::get('events.enable.auto.offset.store'));
 
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 

@@ -54,6 +54,9 @@ return [
     'enable' => [
         'auto' => [
             'commit' => env('ENABLE_AUTO_COMMIT', 'true'),
+            'offset' => [
+                'store' => env('ENABLE_AUTO_OFFSET_STORE', 'true'),
+            ],
         ],
     ],
     'message' => [
