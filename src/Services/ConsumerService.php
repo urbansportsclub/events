@@ -89,6 +89,22 @@ class ConsumerService
     public function commit(): void
     {
         try {
+            $this->consumer->commit();
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage(), [
+                'exception' => $ex,
+                'metadata' => $this->consumer->getMetadata(false, null, 60e3),
+                'topics' => $this->consumer->getSubscription(),
+            ]);
+        }
+    }
+
+    /**
+     * @throws \RdKafka\Exception
+     */
+    public function commitAsync(): void
+    {
+        try {
             $this->consumer->commitAsync();
         } catch (\Exception $ex) {
             Log::error($ex->getMessage(), [

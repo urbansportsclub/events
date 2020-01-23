@@ -80,13 +80,59 @@ class ConsumerServiceTest extends TestCase
     {
         $this->consumerMock
             ->expects($this->once())
-            ->method('commitAsync');
+            ->method('commit');
 
         $this->consumerService->commit();
     }
 
     /** @test */
     public function failing_to_commit_will_fail_gracefully()
+    {
+        Log::spy();
+        $topics = ['test_topic'];
+        $metadata = $this->createMock(Metadata::class);
+        $message = 'failed to commit';
+        $exception = new \RdKafka\Exception($message);
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('commit')
+            ->willThrowException($exception);
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('getMetadata')
+            ->with(false, null, 60e3)
+            ->willReturn($metadata);
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('getMetadata')
+            ->with(false, null, 60e3)
+            ->willReturn($topics);
+
+        Log::shouldReceive('error')
+            ->with($message, [
+                'exception' => $exception,
+                'metadata' => $exception,
+                'topics' => $topics,
+            ]);
+
+        $this->consumerService->commit();
+    }
+
+    /** @test */
+    public function can_commit_async_offset()
+    {
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('commitAsync');
+
+        $this->consumerService->commitAsync();
+    }
+
+    /** @test */
+    public function failing_to_commit_async_will_fail_gracefully()
     {
         Log::spy();
         $topics = ['test_topic'];
@@ -118,7 +164,7 @@ class ConsumerServiceTest extends TestCase
                 'topics' => $topics,
             ]);
 
-        $this->consumerService->commit();
+        $this->consumerService->commitAsync();
     }
 
     /** @test */
