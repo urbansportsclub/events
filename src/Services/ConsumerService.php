@@ -100,6 +100,14 @@ class ConsumerService
     }
 
     /**
+     * @return void
+     */
+    public function close(): void
+    {
+        $this->consumer->close();
+    }
+
+    /**
      * @return Message
      */
     private function getMessage(): Message

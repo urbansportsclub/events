@@ -2,12 +2,14 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
+use Illuminate\Support\Facades\Log;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use RdKafka\Message as KafkaMessage;
 use OneFit\Events\Services\ConsumerService;
 use PHPUnit\Framework\MockObject\MockClass;
+use RdKafka\Metadata;
 
 /**
  * Class ConsumerServiceTest.
@@ -71,5 +73,61 @@ class ConsumerServiceTest extends TestCase
         $response = $this->consumerService->consume(120000);
 
         $this->assertEquals($this->messageMock, $response);
+    }
+
+    /** @test */
+    public function can_commit_offset()
+    {
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('commitAsync');
+
+        $this->consumerService->commit();
+    }
+
+    /** @test */
+    public function failing_to_commit_will_fail_gracefully()
+    {
+        Log::spy();
+        $topics = ['test_topic'];
+        $metadata = $this->createMock(Metadata::class);
+        $message = 'failed to commit';
+        $exception = new \RdKafka\Exception($message);
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('commitAsync')
+            ->willThrowException($exception);
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('getMetadata')
+            ->with(false, null, 60e3)
+            ->willReturn($metadata);
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('getMetadata')
+            ->with(false, null, 60e3)
+            ->willReturn($topics);
+
+        Log::shouldReceive('error')
+            ->with($message, [
+                'exception' => $exception,
+                'metadata' => $exception,
+                'topics' => $topics,
+            ]);
+
+        $this->consumerService->commit();
+    }
+
+    /** @test */
+    public function can_close_consumer_connection()
+    {
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('close');
+
+        $this->consumerService->close();
     }
 }
