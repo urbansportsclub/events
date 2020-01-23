@@ -2,14 +2,14 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
-use Illuminate\Support\Facades\Log;
+use RdKafka\Metadata;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
+use Illuminate\Support\Facades\Log;
 use RdKafka\Message as KafkaMessage;
 use OneFit\Events\Services\ConsumerService;
 use PHPUnit\Framework\MockObject\MockClass;
-use RdKafka\Metadata;
 
 /**
  * Class ConsumerServiceTest.
