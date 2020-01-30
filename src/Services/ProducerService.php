@@ -28,8 +28,8 @@ class ProducerService
     /**
      * ProducerService constructor.
      * @param Producer $producer
-     * @param int $timeout
-     * @param int $retries
+     * @param int      $timeout
+     * @param int      $retries
      */
     public function __construct(Producer $producer, int $timeout, int $retries)
     {
