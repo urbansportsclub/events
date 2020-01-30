@@ -69,6 +69,9 @@ return [
     ],
     'flush' => [
         'retries' => env('FLUSH_RETRIES', 3),
+        'timeout' => [
+            'ms' => env('FLUSH_TIMEOUT_MS', 3000),
+        ],
     ],
     'queue' => [
         'buffering' => [

@@ -98,7 +98,7 @@ class EventsServiceProvider extends ServiceProvider
 
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
-            return new ProducerService($producer, Config::get('events.flush.retries'));
+            return new ProducerService($producer, Config::get('events.flush.timeout.ms'), Config::get('events.flush.retries'));
         });
     }
 

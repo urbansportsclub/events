@@ -3,6 +3,7 @@
 | --- | --- | --- | --- |
 | `METADATA_BROKER_LIST` | Initial list of brokers as a CSV list of broker host or host:port. | string | localhost:9092 |
 | `FLUSH_RETRIES` | Specifies the maximum amount of flush retries. | integer | 3 |
+| `FLUSH_TIMEOUT_MS` | Specifies the maximum amount of time (in milliseconds) that the call will block. To wait indefinitely provide -1. | integer | 3000 |
 | `TOPIC_METADATA_REFRESH_INTERVAL_MS` | Period of time in milliseconds at which topic and broker metadata is refreshed in order to proactively discover any new brokers, topics, partitions or partition leader changes. Use -1 to disable the intervalled refresh (not recommended). If there are no locally referenced topics (no topic objects created, no messages produced, no subscription or no assignment) then only the broker list will be refreshed every interval but no more often than every 10s. | integer | 300000 |
 | `TOPIC_METADATA_REFRESH_SPARSE` | Sparse metadata requests (consumes less network bandwidth) | boolean | true |
 | `AUTO_OFFSET_RESET` | Action to take when there is no initial offset in offset store or the desired offset is out of range: 'smallest','earliest' - automatically reset the offset to the smallest offset, 'largest','latest' - automatically reset the offset to the largest offset, 'error' - trigger an error which is retrieved by consuming messages and checking 'message->err'. | enum (smallest, earliest, beginning, largest, latest, end, error) | smallest
