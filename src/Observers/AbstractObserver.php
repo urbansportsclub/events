@@ -97,12 +97,13 @@ abstract class AbstractObserver
      */
     private function produce(Message $message): void
     {
-        $producer = $this->producer;
         try {
-            $producer()->produce($message, $this->topic);
+            $producer = call_user_func($this->producer);
+            $producer->produce($message, $this->topic);
+            $producer->flush();
         } catch (\Exception $ex) {
             Log::error($ex->getMessage(), [
-                'exception' => $ex,
+                'code' => $ex->getCode(),
                 'message' => json_encode($message, JSON_FORCE_OBJECT),
                 'topic' => $this->topic,
             ]);
