@@ -39,7 +39,7 @@ All of the message parameters are optional strings, created for our business nee
 ```
 <?php
 
-$consumer = app()->make(ConsumerService::class, ['group_id' => $groupId]);
+$consumer = app()->make(OneFit\Events\Services\ConsumerService::class, ['group_id' => $groupId]);
 $consumer->subscribe([$topic]);
 
 while (true) {
