@@ -74,5 +74,13 @@ Hopefully this is enough to get you going, if you would like to find out the mag
 
 **Note:** We did not implemented all of the available configuration settings, since at this point we don’t have a need to navigate from default values. To see a list of all of the available configuration parameters, click [here](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
 
+## Using producer/consumer services to manually produce/consume events
+Please refer to our [manual page](docs/MANUAL.md). 
+
+## Credits
+This package is build on top of [arnaud-lb/php-rdkafka](https://github.com/arnaud-lb/php-rdkafka) extension.
+
+Authors: see [contributors](https://github.com/onefit/events/graphs/contributors).
+
 ## License
 onefit/events is available under the MIT license. See the [LICENSE](LICENSE) file for more information.
