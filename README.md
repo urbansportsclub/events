@@ -83,4 +83,4 @@ This package is build on top of [arnaud-lb/php-rdkafka](https://github.com/arnau
 Authors: see [contributors](https://github.com/onefit/events/graphs/contributors).
 
 ## License
-onefit/events is available under the MIT license. See the [LICENSE](LICENSE) file for more information.
+This package is available under the MIT license. See the [LICENSE](LICENSE) file for more information.
