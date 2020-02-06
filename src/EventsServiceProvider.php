@@ -75,6 +75,9 @@ class EventsServiceProvider extends ServiceProvider
         $configuration->set('topic.metadata.refresh.sparse', Config::get('events.topic.metadata.refresh.sparse'));
         $configuration->set('topic.metadata.refresh.interval.ms', Config::get('events.topic.metadata.refresh.interval.ms'));
 
+        // Timeout for broker API version requests
+        $configuration->set('api.version.request.timeout.ms', Config::get('events.api.version.request.timeout.ms'));
+
         // Signal that librdkafka will use to quickly terminate on rd_kafka_destroy()
         pcntl_sigprocmask(SIG_BLOCK, [Config::get('events.internal.termination.signal')]);
         $configuration->set('internal.termination.signal', Config::get('events.internal.termination.signal'));

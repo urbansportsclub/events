@@ -85,4 +85,13 @@ return [
             'acks' => env('REQUEST_REQUIRED_ACKS', -1),
         ],
     ],
+    'api' => [
+        'version' => [
+            'request' => [
+                'timeout' => [
+                    'ms' => env('EVENTS_API_VERSION_REQUEST_TIMEOUT_MS', 10000),
+                ],
+            ],
+        ],
+    ],
 ];
