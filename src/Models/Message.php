@@ -207,7 +207,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param array $original
+     * @param  array   $original
      * @return Message
      */
     public function setOriginal(array $original): self
@@ -256,7 +256,7 @@ class Message implements JsonSerializable
         isset($data['source']) && $this->setSource($data['source']);
         isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);
-        !empty($data) && $this->setOriginal($data);
+        ! empty($data) && $this->setOriginal($data);
 
         return $this;
     }
