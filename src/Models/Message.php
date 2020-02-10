@@ -50,6 +50,11 @@ class Message implements JsonSerializable
     private $error;
 
     /**
+     * @var array
+     */
+    private $original = [];
+
+    /**
      * @return string|null
      */
     public function getId(): ?string
@@ -194,6 +199,25 @@ class Message implements JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function getOriginal(): array
+    {
+        return $this->original;
+    }
+
+    /**
+     * @param array $original
+     * @return Message
+     */
+    public function setOriginal(array $original): self
+    {
+        $this->original = $original;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function hasError(): bool
@@ -232,6 +256,7 @@ class Message implements JsonSerializable
         isset($data['source']) && $this->setSource($data['source']);
         isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);
+        !empty($data) && $this->setOriginal($data);
 
         return $this;
     }
