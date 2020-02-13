@@ -8,5 +8,6 @@ namespace OneFit\Events\Models;
 interface Topic
 {
     public const MEMBER_DOMAIN = 'member_domain';
+    public const BUSINESS_DOMAIN = 'business_domain';
     public const NOTIFICATION_STREAM = 'notification_stream';
 }
