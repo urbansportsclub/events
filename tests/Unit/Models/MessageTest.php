@@ -47,4 +47,27 @@ class MessageTest extends TestCase
         ], $message->jsonSerialize());
         $this->assertSame(sha1(json_encode($message, JSON_FORCE_OBJECT).'secret-salt'), $message->getSignature());
     }
+
+    /** @test */
+    public function can_hydrate_message()
+    {
+        $data = [
+            'type' => 'check_in',
+            'id' => 'uuid',
+            'connection' => 'mysql',
+            'event' => 'MyEventClass',
+            'payload' => 'data about the event',
+            'source' => 'api',
+        ];
+
+        $message = new Message();
+        $message->hydrate($data);
+
+        $this->assertSame($data['event'], $message->getEvent());
+        $this->assertSame($data['type'], $message->getType());
+        $this->assertSame($data['source'], $message->getSource());
+        $this->assertSame($data['connection'], $message->getConnection());
+        $this->assertSame($data['payload'], $message->getPayload());
+        $this->assertSame($data, $message->getOriginal());
+    }
 }
