@@ -16,6 +16,7 @@ interface Type
     public const TOKENS = 'tokens';
     public const PERIOD = 'period';
     public const ORDER = 'order';
+    public const ORDERS = 'orders';
     public const RECURRING = 'recurring';
     public const FINE = 'fine';
     public const SURPLUS_MANDATE = 'surplus_mandate';
