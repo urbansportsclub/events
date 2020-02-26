@@ -23,6 +23,11 @@ List of the available configuration parameters with their description can be fou
 ## Installation
 To get started, you just need to pull *onefit/events* package into your application.
 
+~~~
+composer require onefit/events
+~~~
+
+
 For the laravel applications the service is auto-discoverable, so beside pulling the package and specifying application events, there is not much to do.
 
 For lumen applications, both *EventsServiceProvider* and *events* configuration should be manually registered inside of the *bootstrap/app.php* for given lumen application.
