@@ -22,4 +22,5 @@ interface Event
     public const EVENT_RECURRING_CLOSED = 'recurring_closed';
     public const EVENT_SURPLUS_MANDATE_OPENED = 'surplus_mandate_opened';
     public const EVENT_SURPLUS_MANDATE_CLOSED = 'surplus_mandate_closed';
+    public const EVENT_CHECKIN_INVALIDATED = 'checkin_invalidated';
 }
