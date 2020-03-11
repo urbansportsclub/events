@@ -19,4 +19,5 @@ interface Type
     public const RECURRING = 'recurring';
     public const FINE = 'fine';
     public const SURPLUS_MANDATE = 'surplus_mandate';
+    public const RESERVATION = 'reservation';
 }
