@@ -15,7 +15,7 @@
         "php": ">=7.1",
         "ext-rdkafka": "^4.0",
         "ext-pcntl": "^7.2",
-        "illuminate/support": "5.6.* || ^6.0",
+        "illuminate/support": "^5.6 || ^6.0",
         "ext-json": "^1.6"
     },
     "require-dev": {
