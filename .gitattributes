@@ -1,0 +1,9 @@
+# Domain excludes
+/src/Models/Event.php export-ignore
+/src/Models/Source.php export-ignore
+/src/Models/Topic.php export-ignore
+/src/Models/Type.php export-ignore
+
+# General excludes
+.gitattributes export-ignore
+.gitignore export-ignore
