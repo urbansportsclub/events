@@ -2,8 +2,11 @@
 
 namespace OneFit\Events\Services;
 
+use AvroSchemaParseException;
 use Closure;
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
+use RdKafka\Exception as RdKafkaException;
 use RdKafka\KafkaConsumer;
 use Illuminate\Support\Arr;
 use OneFit\Events\Models\Message;
@@ -52,8 +55,8 @@ class ConsumerService
 
     /**
      * @param  array              $topics
-     * @throws \RdKafka\Exception
      * @return ConsumerService
+     *@throws RdKafkaException
      */
     public function subscribe(array $topics): self
     {
@@ -63,12 +66,12 @@ class ConsumerService
     }
 
     /**
-     * @param  int                $timeout
-     * @param  bool               $applySchema
-     * @throws \RdKafka\Exception
+     * @param int $timeout
      * @return Message
+     * @throws SchemaRegistryException
+     * @throws RdKafkaException
      */
-    public function consume(int $timeout, bool $applySchema = true): Message
+    public function consume(int $timeout): Message
     {
         $message = $this->getMessage();
 
@@ -76,7 +79,7 @@ class ConsumerService
             $kafkaMessage = $this->consumer->consume($timeout);
             switch ($kafkaMessage->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $message->hydrate($this->decodeMessage($kafkaMessage->topic_name, $kafkaMessage->payload, $applySchema));
+                    $message->hydrate($this->decodeMessage($kafkaMessage->payload, $kafkaMessage->topic_name));
                     break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
@@ -102,7 +105,7 @@ class ConsumerService
     }
 
     /**
-     * @throws \RdKafka\Exception
+     * @throws RdKafkaException
      */
     public function commit(): void
     {
@@ -118,7 +121,7 @@ class ConsumerService
     }
 
     /**
-     * @throws \RdKafka\Exception
+     * @throws RdKafkaException
      */
     public function commitAsync(): void
     {
@@ -158,25 +161,28 @@ class ConsumerService
     }
 
     /**
-     * @param  string $subject
-     * @param  string $message
-     * @param  bool   $applySchema
+     * @param string $message
+     * @param string $topic
      * @return array
+     * @throws AvroSchemaParseException
+     * @throws SchemaRegistryException
      */
-    private function decodeMessage(string $subject, string $message, bool $applySchema): array
+    private function decodeMessage(string $message, string $topic): array
     {
-        if ($applySchema && isset($this->schemas['path'][$subject], $this->schemas['mapping'][$subject])) {
-            return $this->decodeForSchema($message, $this->schemas['path'][$subject], $this->schemas['mapping'][$subject]);
+        if (isset($this->schemas['path'][$topic], $this->schemas['mapping'][$topic])) {
+            return $this->decodeForSchema($message, $this->schemas['path'][$topic], $this->schemas['mapping'][$topic]);
         }
 
         return json_decode($message, true);
     }
 
     /**
-     * @param  string $message
-     * @param  string $path
-     * @param  array  $mapping
+     * @param string $message
+     * @param string $path
+     * @param array $mapping
      * @return array
+     * @throws AvroSchemaParseException
+     * @throws SchemaRegistryException
      */
     private function decodeForSchema(string $message, string $path, array $mapping): array
     {

@@ -59,12 +59,11 @@ class ProducerService
     /**
      * @param Message $message
      * @param string  $topic
-     * @param bool    $applySchema
      */
-    public function produce(Message $message, string $topic, bool $applySchema = true): void
+    public function produce(Message $message, string $topic): void
     {
-        $topic = $this->producer->newTopic($topic);
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, $this->encodeMessage($message, $applySchema), $message->getSignature());
+        $producerTopic = $this->producer->newTopic($topic);
+        $producerTopic->produce(RD_KAFKA_PARTITION_UA, 0, $this->encodeMessage($message, $topic), $message->getSignature());
         $this->producer->poll(0);
     }
 
@@ -85,16 +84,16 @@ class ProducerService
     }
 
     /**
-     * @param  Message                                                       $message
-     * @param  bool                                                          $applySchema
+     * @param Message $message
+     * @param string $topic
+     * @return string
      * @throws \AvroSchemaParseException
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @return string
      */
-    private function encodeMessage(Message $message, bool $applySchema): string
+    private function encodeMessage(Message $message, string $topic): string
     {
-        if ($applySchema && isset($this->schemas['path'][$message->getType()], $this->schemas['mapping'][$message->getType()])) {
-            return $this->encodeForSchema($message, $this->schemas['path'][$message->getType()], $this->schemas['mapping'][$message->getType()]);
+        if (isset($this->schemas['path'][$topic], $this->schemas['mapping'][$topic])) {
+            return $this->encodeForSchema($message, $this->schemas['path'][$topic], $this->schemas['mapping'][$topic]);
         }
 
         return json_encode($message, JSON_FORCE_OBJECT);

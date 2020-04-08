@@ -20,7 +20,7 @@ return [
             'base_uri' => env('SCHEMA_REGISTRY_BASE_URI'),
         ],
         'mapping' => [
-            //            \OneFit\Events\Models\Type::CHECK_IN => [
+            //            \OneFit\Events\Models\Topic::CHECKINS => [
             //                'payload.uuid' => 'id',
             //                'payload.member' => 'memberId',
             //                'payload.created_at' => 'createdAt',
@@ -31,7 +31,7 @@ return [
             //            ],
         ],
         'path' => [
-            //            \OneFit\Events\Models\Type::CHECK_IN => __DIR__ . '/../vendor/onefit/kafka-event-schemas/lang/php/onefit.events.checkin.Checkin.json'
+            //            \OneFit\Events\Models\Topic::CHECKINS => __DIR__ . '/../vendor/onefit/kafka-event-schemas/lang/php/onefit.events.checkin.Checkin.json'
         ],
     ],
     'source' => \OneFit\Events\Models\Source::UNDEFINED,
