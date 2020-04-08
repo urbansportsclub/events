@@ -15,6 +15,25 @@ return [
     'listeners' => [
         //        \OneFit\Events\Models\Type::NOTIFICATION => \OneFit\Events\Models\Topic::NOTIFICATION_STREAM,
     ],
+    'schemas' => [
+        'registry' => [
+            'base_uri' => env('SCHEMA_REGISTRY_BASE_URI'),
+        ],
+        'mapping' => [
+//            \OneFit\Events\Models\Type::CHECK_IN => [
+//                'payload.uuid' => 'id',
+//                'payload.member' => 'memberId',
+//                'payload.created_at' => 'createdAt',
+//                'payload.location' => 'partnerId',
+//                'payload.reservation.uuid' => 'booking.id',
+//                'payload.reservation.mongo_id' => 'booking.instanceId',
+//                'event' => 'event.action',
+//            ],
+        ],
+        'path' => [
+//            \OneFit\Events\Models\Type::CHECK_IN => __DIR__ . '/../vendor/onefit/kafka-event-schemas/lang/php/onefit.events.checkin.Checkin.json'
+        ],
+    ],
     'source' => \OneFit\Events\Models\Source::UNDEFINED,
     'metadata' => [
         'broker' => [

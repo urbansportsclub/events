@@ -2,6 +2,10 @@
 
 namespace OneFit\Events\Services;
 
+use AvroSchema;
+use Closure;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
+use Illuminate\Support\Arr;
 use RdKafka\KafkaConsumer;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
@@ -22,14 +26,28 @@ class ConsumerService
     private $message;
 
     /**
+     * @var array
+     */
+    private $schemas;
+
+    /**
+     * @var Closure
+     */
+    private $serializer;
+
+    /**
      * ConsumerService constructor.
      * @param KafkaConsumer $consumer
-     * @param Message       $message
+     * @param Message $message
+     * @param Closure $serializer
+     * @param array $schemas
      */
-    public function __construct(KafkaConsumer $consumer, Message $message)
+    public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas)
     {
         $this->consumer = $consumer;
         $this->message = $message;
+        $this->serializer = $serializer;
+        $this->schemas = $schemas;
     }
 
     /**
@@ -45,11 +63,12 @@ class ConsumerService
     }
 
     /**
-     * @param  int                $timeout
-     * @throws \RdKafka\Exception
+     * @param int $timeout
+     * @param bool $applySchema
      * @return Message
+     * @throws \RdKafka\Exception
      */
-    public function consume(int $timeout): Message
+    public function consume(int $timeout, bool $applySchema = true): Message
     {
         $message = $this->getMessage();
 
@@ -57,8 +76,7 @@ class ConsumerService
             $kafkaMessage = $this->consumer->consume($timeout);
             switch ($kafkaMessage->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $payload = json_decode($kafkaMessage->payload, true);
-                    is_array($payload) && $message->hydrate($payload);
+                    $message->hydrate($this->decodeMessage($kafkaMessage->topic_name, $kafkaMessage->payload, $applySchema));
                     break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
@@ -129,5 +147,46 @@ class ConsumerService
     private function getMessage(): Message
     {
         return clone $this->message;
+    }
+
+    /**
+     * @return RecordSerializer
+     */
+    private function getSerializer(): RecordSerializer
+    {
+        return call_user_func($this->serializer);
+    }
+
+    /**
+     * @param string $subject
+     * @param string $message
+     * @param bool $applySchema
+     * @return array
+     */
+    private function decodeMessage(string $subject, string $message, bool $applySchema): array
+    {
+        if ($applySchema && isset($this->schemas['path'][$subject], $this->schemas['mapping'][$subject])) {
+            return $this->decodeForSchema($message, $this->schemas['path'][$subject], $this->schemas['mapping'][$subject]);
+        }
+
+        return json_decode($message, true);
+    }
+
+    /**
+     * @param string $message
+     * @param string $path
+     * @param array $mapping
+     * @return array
+     */
+    private function decodeForSchema(string $message, string $path, array $mapping): array
+    {
+        $mapped = [];
+        $items = $this->getSerializer()->decodeMessage($message, AvroSchema::parse(file_get_contents($path)));
+
+        foreach ($mapping as $from => $to) {
+            Arr::set($mapped, $from, Arr::get($items, $to));
+        }
+
+        return $mapped;
     }
 }

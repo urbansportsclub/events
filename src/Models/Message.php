@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Models;
 
+use Illuminate\Support\Arr;
 use JsonSerializable;
 
 /**

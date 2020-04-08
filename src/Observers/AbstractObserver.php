@@ -75,7 +75,7 @@ abstract class AbstractObserver
     protected function custom(string $event, QueueableEntity $entity): void
     {
         $message = $this->createMessage($entity, $event);
-        $this->produce($message);
+        $this->produce($message, false);
     }
 
     /**
@@ -94,12 +94,13 @@ abstract class AbstractObserver
 
     /**
      * @param Message $message
+     * @param bool $applySchema
      */
-    private function produce(Message $message): void
+    private function produce(Message $message, bool $applySchema = true): void
     {
         try {
             $producer = call_user_func($this->producer);
-            $producer->produce($message, $this->topic);
+            $producer->produce($message, $this->topic, $applySchema);
             $producer->flush();
         } catch (\Exception $ex) {
             Log::error($ex->getMessage(), [

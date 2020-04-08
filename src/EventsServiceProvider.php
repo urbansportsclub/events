@@ -2,6 +2,11 @@
 
 namespace OneFit\Events;
 
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
+use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
+use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use GuzzleHttp\Client;
+use OneFit\Events\Adapters\CacheAdapter;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\KafkaConsumer;
@@ -41,6 +46,7 @@ class EventsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->setupConfig();
+        $this->registerSerializer();
         $this->registerObservers();
         $this->registerListeners();
     }
@@ -86,6 +92,31 @@ class EventsServiceProvider extends ServiceProvider
     /**
      * @return void
      */
+    private function registerSerializer(): void
+    {
+        $this->app->bind(RecordSerializer::class, function ($app) {
+            $registry = new CachedRegistry(
+                new PromisingRegistry(
+                    new Client(['base_uri' => Config::get('events.schemas.registry.base_uri')])
+                ),
+                new CacheAdapter()
+            );
+
+            return new RecordSerializer(
+                $registry,
+                [
+                    // If you want to auto-register missing schemas set this to true
+                    RecordSerializer::OPTION_REGISTER_MISSING_SCHEMAS => false,
+                    // If you want to auto-register missing subjects set this to true
+                    RecordSerializer::OPTION_REGISTER_MISSING_SUBJECTS => false,
+                ]
+            );
+        });
+    }
+
+    /**
+     * @return void
+     */
     private function registerProducer(): void
     {
         $this->app->bind(ProducerService::class, function ($app) {
@@ -101,7 +132,17 @@ class EventsServiceProvider extends ServiceProvider
 
             $producer = $app->make(Producer::class, ['conf' => $configuration]);
 
-            return new ProducerService($producer, Config::get('events.flush.timeout.ms'), Config::get('events.flush.retries'));
+            $serializer = function () {
+                return $this->app->make(RecordSerializer::class);
+            };
+
+            return new ProducerService(
+                $producer,
+                $serializer,
+                Config::get('events.schemas', []),
+                Config::get('events.flush.timeout.ms'),
+                Config::get('events.flush.retries')
+            );
         });
     }
 
@@ -127,7 +168,16 @@ class EventsServiceProvider extends ServiceProvider
 
             $consumer = $app->make(KafkaConsumer::class, ['conf' => $configuration]);
 
-            return new ConsumerService($consumer, $app->make(Message::class));
+            $serializer = function () {
+                return $this->app->make(RecordSerializer::class);
+            };
+
+            return new ConsumerService(
+                $consumer,
+                $app->make(Message::class),
+                $serializer,
+                Config::get('events.schemas', [])
+            );
         });
     }
 
