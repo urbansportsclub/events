@@ -84,11 +84,11 @@ class ProducerService
     }
 
     /**
-     * @param Message $message
-     * @param string $topic
-     * @return string
+     * @param  Message                                                       $message
+     * @param  string                                                        $topic
      * @throws \AvroSchemaParseException
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @return string
      */
     private function encodeMessage(Message $message, string $topic): string
     {
