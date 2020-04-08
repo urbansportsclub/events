@@ -2,16 +2,16 @@
 
 namespace OneFit\Events\Services;
 
-use AvroSchemaParseException;
 use Closure;
 use AvroSchema;
-use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
-use RdKafka\Exception as RdKafkaException;
 use RdKafka\KafkaConsumer;
 use Illuminate\Support\Arr;
+use AvroSchemaParseException;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
+use RdKafka\Exception as RdKafkaException;
 use FlixTech\AvroSerializer\Objects\RecordSerializer;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 
 /**
  * Class ConsumerService.
@@ -54,9 +54,9 @@ class ConsumerService
     }
 
     /**
-     * @param  array              $topics
-     * @return ConsumerService
+     * @param array $topics
      *@throws RdKafkaException
+     * @return ConsumerService
      */
     public function subscribe(array $topics): self
     {
@@ -66,10 +66,10 @@ class ConsumerService
     }
 
     /**
-     * @param int $timeout
-     * @return Message
+     * @param  int                     $timeout
      * @throws SchemaRegistryException
      * @throws RdKafkaException
+     * @return Message
      */
     public function consume(int $timeout): Message
     {
@@ -161,11 +161,11 @@ class ConsumerService
     }
 
     /**
-     * @param string $message
-     * @param string $topic
-     * @return array
+     * @param  string                   $message
+     * @param  string                   $topic
      * @throws AvroSchemaParseException
      * @throws SchemaRegistryException
+     * @return array
      */
     private function decodeMessage(string $message, string $topic): array
     {
@@ -177,12 +177,12 @@ class ConsumerService
     }
 
     /**
-     * @param string $message
-     * @param string $path
-     * @param array $mapping
-     * @return array
+     * @param  string                   $message
+     * @param  string                   $path
+     * @param  array                    $mapping
      * @throws AvroSchemaParseException
      * @throws SchemaRegistryException
+     * @return array
      */
     private function decodeForSchema(string $message, string $path, array $mapping): array
     {
