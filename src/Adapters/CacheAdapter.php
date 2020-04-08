@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Cache;
 class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
 {
     /**
-     * Caches an AvroSchema with a given global schema id
+     * Caches an AvroSchema with a given global schema id.
      *
      * @param AvroSchema $schema
-     * @param int $schemaId
+     * @param int        $schemaId
      *
      * @return void
      */
@@ -21,11 +21,11 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
     }
 
     /**
-     * Caches an AvroSchema with a given subject and version
+     * Caches an AvroSchema with a given subject and version.
      *
      * @param AvroSchema $schema
-     * @param string $subject
-     * @param int $version
+     * @param string     $subject
+     * @param int        $version
      *
      * @return void
      */
@@ -35,9 +35,9 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
     }
 
     /**
-     * Caches a schema id by a hash (i.e. the hash of the Avro schema string representation)
+     * Caches a schema id by a hash (i.e. the hash of the Avro schema string representation).
      *
-     * @param int $schemaId
+     * @param int    $schemaId
      * @param string $schemaHash
      *
      * @return void
@@ -82,7 +82,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * Returns either the AvroSchema when found or `null` when not.
      *
      * @param string $subject
-     * @param int $version
+     * @param int    $version
      *
      * @return AvroSchema|null
      */
@@ -106,7 +106,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
     }
 
     /**
-     * Checks if a schema id exists for the given hash
+     * Checks if a schema id exists for the given hash.
      *
      * @param string $schemaHash
      *
@@ -121,7 +121,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * Checks if the cache engine has a cached schema for a given subject and version.
      *
      * @param string $subject
-     * @param int $version
+     * @param int    $version
      *
      * @return bool
      */
@@ -140,8 +140,8 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
     }
 
     /**
-     * @param string $subject
-     * @param int $version
+     * @param  string $subject
+     * @param  int    $version
      * @return string
      */
     private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
@@ -150,7 +150,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
     }
 
     /**
-     * @param string $schemaHash
+     * @param  string $schemaHash
      * @return string
      */
     private function makeKeyFromHash(string $schemaHash): string

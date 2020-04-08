@@ -2,12 +2,12 @@
 
 namespace OneFit\Events\Services;
 
-use AvroSchema;
 use Closure;
-use FlixTech\AvroSerializer\Objects\RecordSerializer;
-use Illuminate\Support\Arr;
+use AvroSchema;
 use RdKafka\Producer;
+use Illuminate\Support\Arr;
 use OneFit\Events\Models\Message;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 
 /**
  * Class ProducerService.
@@ -42,10 +42,10 @@ class ProducerService
     /**
      * ProducerService constructor.
      * @param Producer $producer
-     * @param array $schemas
-     * @param Closure $serializer
-     * @param int $timeout
-     * @param int $retries
+     * @param array    $schemas
+     * @param Closure  $serializer
+     * @param int      $timeout
+     * @param int      $retries
      */
     public function __construct(Producer $producer, Closure $serializer, array $schemas, int $timeout, int $retries)
     {
@@ -58,8 +58,8 @@ class ProducerService
 
     /**
      * @param Message $message
-     * @param string $topic
-     * @param bool $applySchema
+     * @param string  $topic
+     * @param bool    $applySchema
      */
     public function produce(Message $message, string $topic, bool $applySchema = true): void
     {
@@ -85,11 +85,11 @@ class ProducerService
     }
 
     /**
-     * @param Message $message
-     * @param bool $applySchema
-     * @return string
+     * @param  Message                                                       $message
+     * @param  bool                                                          $applySchema
      * @throws \AvroSchemaParseException
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @return string
      */
     private function encodeMessage(Message $message, bool $applySchema): string
     {
@@ -109,12 +109,12 @@ class ProducerService
     }
 
     /**
-     * @param Message $message
-     * @param string $path
-     * @param array $mapping
-     * @return string
+     * @param  Message                                                       $message
+     * @param  string                                                        $path
+     * @param  array                                                         $mapping
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      * @throws \AvroSchemaParseException
+     * @return string
      */
     private function encodeForSchema(Message $message, string $path, array $mapping): string
     {

@@ -2,18 +2,15 @@
 
 namespace OneFit\Events;
 
-use FlixTech\AvroSerializer\Objects\RecordSerializer;
-use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
-use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
-use GuzzleHttp\Client;
-use OneFit\Events\Adapters\CacheAdapter;
 use RdKafka\Conf;
 use RdKafka\Producer;
+use GuzzleHttp\Client;
 use RdKafka\KafkaConsumer;
 use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use OneFit\Events\Adapters\CacheAdapter;
 use Illuminate\Contracts\Events\Dispatcher;
 use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
@@ -21,6 +18,9 @@ use OneFit\Events\Observers\CreatedObserver;
 use OneFit\Events\Observers\DeletedObserver;
 use OneFit\Events\Observers\GenericObserver;
 use OneFit\Events\Observers\UpdatedObserver;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
+use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
+use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
 
 /**
  * Class EventsServiceProvider.
