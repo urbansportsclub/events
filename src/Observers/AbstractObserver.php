@@ -94,7 +94,7 @@ abstract class AbstractObserver
 
     /**
      * @param Message $message
-     * @param bool $applySchema
+     * @param bool    $applySchema
      */
     private function produce(Message $message, bool $applySchema = true): void
     {

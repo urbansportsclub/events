@@ -2,13 +2,13 @@
 
 namespace OneFit\Events\Services;
 
-use AvroSchema;
 use Closure;
-use FlixTech\AvroSerializer\Objects\RecordSerializer;
-use Illuminate\Support\Arr;
+use AvroSchema;
 use RdKafka\KafkaConsumer;
+use Illuminate\Support\Arr;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 
 /**
  * Class ConsumerService.
@@ -38,9 +38,9 @@ class ConsumerService
     /**
      * ConsumerService constructor.
      * @param KafkaConsumer $consumer
-     * @param Message $message
-     * @param Closure $serializer
-     * @param array $schemas
+     * @param Message       $message
+     * @param Closure       $serializer
+     * @param array         $schemas
      */
     public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas)
     {
@@ -63,10 +63,10 @@ class ConsumerService
     }
 
     /**
-     * @param int $timeout
-     * @param bool $applySchema
-     * @return Message
+     * @param  int                $timeout
+     * @param  bool               $applySchema
      * @throws \RdKafka\Exception
+     * @return Message
      */
     public function consume(int $timeout, bool $applySchema = true): Message
     {
@@ -158,9 +158,9 @@ class ConsumerService
     }
 
     /**
-     * @param string $subject
-     * @param string $message
-     * @param bool $applySchema
+     * @param  string $subject
+     * @param  string $message
+     * @param  bool   $applySchema
      * @return array
      */
     private function decodeMessage(string $subject, string $message, bool $applySchema): array
@@ -173,9 +173,9 @@ class ConsumerService
     }
 
     /**
-     * @param string $message
-     * @param string $path
-     * @param array $mapping
+     * @param  string $message
+     * @param  string $path
+     * @param  array  $mapping
      * @return array
      */
     private function decodeForSchema(string $message, string $path, array $mapping): array
