@@ -2,7 +2,6 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
-use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use RdKafka\Metadata;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
@@ -11,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use RdKafka\Message as KafkaMessage;
 use OneFit\Events\Services\ConsumerService;
 use PHPUnit\Framework\MockObject\MockClass;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 
 /**
  * Class ConsumerServiceTest.
