@@ -30,14 +30,14 @@ class ProducerService
     private $retries;
 
     /**
-     * @var array
-     */
-    private $schemas;
-
-    /**
      * @var Closure
      */
     private $serializer;
+
+    /**
+     * @var array
+     */
+    private $schemas;
 
     /**
      * ProducerService constructor.
