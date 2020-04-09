@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use RdKafka\Metadata;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,11 @@ class ConsumerServiceTest extends TestCase
     private $messageMock;
 
     /**
+     * @var RecordSerializer|MockClass
+     */
+    private $serializerMock;
+
+    /**
      * @var ConsumerService
      */
     private $consumerService;
@@ -44,8 +50,13 @@ class ConsumerServiceTest extends TestCase
         $this->consumerMock = $this->createMock(KafkaConsumer::class);
         $this->kafkaMessageMock = $this->createMock(KafkaMessage::class);
         $this->messageMock = $this->createMock(Message::class);
+        $this->serializerMock = $this->createMock(RecordSerializer::class);
 
-        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock);
+        $serializer = function () {
+            return $this->serializerMock;
+        };
+
+        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock, $serializer, []);
     }
 
     /** @test */
@@ -64,6 +75,9 @@ class ConsumerServiceTest extends TestCase
     /** @test */
     public function can_consume_stored_messages()
     {
+        $this->kafkaMessageMock->topic_name = 'my-topic';
+        $this->kafkaMessageMock->payload = '{"key": "value"}';
+
         $this->consumerMock
             ->expects($this->once())
             ->method('consume')

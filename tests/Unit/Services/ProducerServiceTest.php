@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
 use OneFit\Events\Models\Topic;
@@ -31,6 +32,11 @@ class ProducerServiceTest extends TestCase
     private $messageMock;
 
     /**
+     * @var RecordSerializer|MockClass
+     */
+    private $serializerMock;
+
+    /**
      * @var ProducerService
      */
     private $producerService;
@@ -43,8 +49,13 @@ class ProducerServiceTest extends TestCase
         $this->producerMock = $this->createMock(Producer::class);
         $this->topicMock = $this->createMock(ProducerTopic::class);
         $this->messageMock = $this->createMock(Message::class);
+        $this->serializerMock = $this->createMock(RecordSerializer::class);
 
-        $this->producerService = new ProducerService($this->producerMock, 3000, 3);
+        $serializer = function () {
+            return $this->serializerMock;
+        };
+
+        $this->producerService = new ProducerService($this->producerMock, $serializer, [], 3000, 3);
 
         parent::setUp();
     }
