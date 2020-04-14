@@ -1,4 +1,6 @@
+# External libraries
 /vendor/
+composer.lock
 
 ## IDE
 .idea/

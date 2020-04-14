@@ -6,14 +6,11 @@ use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
+use OneFit\Events\Observers\CustomObserver;
 use OneFit\Events\Services\ProducerService;
-use OneFit\Events\Observers\CreatedObserver;
 use PHPUnit\Framework\MockObject\MockObject;
 
-/**
- * Class CreatedObserverTest.
- */
-class CreatedObserverTest extends TestCase
+class CustomObserverTest extends TestCase
 {
     /**
      * @var JsonSerializable|MockObject
@@ -31,9 +28,9 @@ class CreatedObserverTest extends TestCase
     private $messageMock;
 
     /**
-     * @var CreatedObserver
+     * @var CustomObserver
      */
-    private $createdObserver;
+    private $customObserver;
 
     /**
      * @return void
@@ -43,15 +40,15 @@ class CreatedObserverTest extends TestCase
         $this->entityMock = $this->createMock(JsonSerializable::class);
         $this->producerMock = $this->createMock(ProducerService::class);
         $this->messageMock = $this->createMock(Message::class);
-        $this->createdObserver = new CreatedObserver(function () {
+        $this->customObserver = new CustomObserver(function () {
             return $this->producerMock;
-        }, $this->messageMock, 'member_domain');
+        }, $this->messageMock, 'notification_stream');
 
         parent::setUp();
     }
 
     /** @test */
-    public function can_observe_created()
+    public function can_observe_custom()
     {
         $payload = ['event' => 'data'];
 
@@ -63,7 +60,7 @@ class CreatedObserverTest extends TestCase
         $this->messageMock
             ->expects($this->once())
             ->method('setEvent')
-            ->with('created')
+            ->with('custom')
             ->willReturn($this->messageMock);
 
         $this->messageMock
@@ -75,9 +72,9 @@ class CreatedObserverTest extends TestCase
         $this->producerMock
             ->expects($this->once())
             ->method('produce')
-            ->with($this->isInstanceOf(Message::class), 'member_domain');
+            ->with($this->isInstanceOf(Message::class), 'notification_stream');
 
-        call_user_func($this->createdObserver, $this->entityMock);
+        call_user_func($this->customObserver, 'custom', [$this->entityMock]);
     }
 
     /** @test */
@@ -93,7 +90,7 @@ class CreatedObserverTest extends TestCase
         $this->messageMock
             ->expects($this->once())
             ->method('setEvent')
-            ->with('created')
+            ->with('custom')
             ->willReturn($this->messageMock);
 
         $this->messageMock
@@ -105,11 +102,11 @@ class CreatedObserverTest extends TestCase
         $this->producerMock
             ->expects($this->once())
             ->method('produce')
-            ->with($this->isInstanceOf(Message::class), 'member_domain')
+            ->with($this->isInstanceOf(Message::class), 'notification_stream')
             ->willThrowException(new \Exception('something went wrong'));
 
         Log::shouldReceive('error')->once();
 
-        call_user_func($this->createdObserver, $this->entityMock);
+        call_user_func($this->customObserver, 'custom', [$this->entityMock]);
     }
 }

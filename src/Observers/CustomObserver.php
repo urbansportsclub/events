@@ -2,9 +2,9 @@
 
 namespace OneFit\Events\Observers;
 
-use Illuminate\Contracts\Queue\QueueableEntity;
+use JsonSerializable;
 
-class GenericObserver extends AbstractObserver
+class CustomObserver extends AbstractObserver
 {
     /**
      * @param string $event
@@ -13,9 +13,9 @@ class GenericObserver extends AbstractObserver
     public function __invoke(string $event, array $data): void
     {
         $entity = reset($data);
-        if ($entity instanceof QueueableEntity) {
+        if ($entity instanceof JsonSerializable) {
             $split = explode('.', $event);
-            $this->custom(end($split), $entity);
+            $this->custom($entity->jsonSerialize(), end($split));
         }
     }
 }

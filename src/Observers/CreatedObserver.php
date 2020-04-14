@@ -2,7 +2,7 @@
 
 namespace OneFit\Events\Observers;
 
-use Illuminate\Contracts\Queue\QueueableEntity;
+use JsonSerializable;
 
 /**
  * Class CreatedObserver.
@@ -10,10 +10,10 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 class CreatedObserver extends AbstractObserver
 {
     /**
-     * @param QueueableEntity $entity
+     * @param JsonSerializable $entity
      */
-    public function __invoke(QueueableEntity $entity): void
+    public function __invoke(JsonSerializable $entity): void
     {
-        $this->created($entity);
+        $this->created($entity->jsonSerialize());
     }
 }

@@ -2,7 +2,7 @@
 
 namespace OneFit\Events\Observers;
 
-use Illuminate\Contracts\Queue\QueueableEntity;
+use JsonSerializable;
 
 /**
  * Class DeletedObserver.
@@ -10,10 +10,10 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 class DeletedObserver extends AbstractObserver
 {
     /**
-     * @param QueueableEntity $entity
+     * @param JsonSerializable $entity
      */
-    public function __invoke(QueueableEntity $entity): void
+    public function __invoke(JsonSerializable $entity): void
     {
-        $this->deleted($entity);
+        $this->deleted($entity->jsonSerialize());
     }
 }

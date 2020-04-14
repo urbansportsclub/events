@@ -2,9 +2,16 @@
 
 namespace OneFit\Events\Services;
 
+use Closure;
+use AvroSchema;
 use RdKafka\KafkaConsumer;
+use Illuminate\Support\Arr;
+use AvroSchemaParseException;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
+use RdKafka\Exception as RdKafkaException;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 
 /**
  * Class ConsumerService.
@@ -22,19 +29,33 @@ class ConsumerService
     private $message;
 
     /**
+     * @var Closure
+     */
+    private $serializer;
+
+    /**
+     * @var array
+     */
+    private $schemas;
+
+    /**
      * ConsumerService constructor.
      * @param KafkaConsumer $consumer
      * @param Message       $message
+     * @param Closure       $serializer
+     * @param array         $schemas
      */
-    public function __construct(KafkaConsumer $consumer, Message $message)
+    public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas)
     {
         $this->consumer = $consumer;
         $this->message = $message;
+        $this->serializer = $serializer;
+        $this->schemas = $schemas;
     }
 
     /**
-     * @param  array              $topics
-     * @throws \RdKafka\Exception
+     * @param array $topics
+     *@throws RdKafkaException
      * @return ConsumerService
      */
     public function subscribe(array $topics): self
@@ -45,8 +66,9 @@ class ConsumerService
     }
 
     /**
-     * @param  int                $timeout
-     * @throws \RdKafka\Exception
+     * @param  int                     $timeout
+     * @throws SchemaRegistryException
+     * @throws RdKafkaException
      * @return Message
      */
     public function consume(int $timeout): Message
@@ -57,8 +79,7 @@ class ConsumerService
             $kafkaMessage = $this->consumer->consume($timeout);
             switch ($kafkaMessage->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $payload = json_decode($kafkaMessage->payload, true);
-                    is_array($payload) && $message->hydrate($payload);
+                    $message->hydrate($this->decodeMessage($kafkaMessage->payload, $kafkaMessage->topic_name));
                     break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
@@ -84,7 +105,7 @@ class ConsumerService
     }
 
     /**
-     * @throws \RdKafka\Exception
+     * @throws RdKafkaException
      */
     public function commit(): void
     {
@@ -100,7 +121,7 @@ class ConsumerService
     }
 
     /**
-     * @throws \RdKafka\Exception
+     * @throws RdKafkaException
      */
     public function commitAsync(): void
     {
@@ -129,5 +150,50 @@ class ConsumerService
     private function getMessage(): Message
     {
         return clone $this->message;
+    }
+
+    /**
+     * @return RecordSerializer
+     */
+    private function getSerializer(): RecordSerializer
+    {
+        return call_user_func($this->serializer);
+    }
+
+    /**
+     * @param  string                   $message
+     * @param  string                   $topic
+     * @throws AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @return array
+     */
+    private function decodeMessage(string $message, string $topic): array
+    {
+        if (isset($this->schemas['path'][$topic], $this->schemas['mapping'][$topic])) {
+            return $this->decodeForSchema($message, $topic);
+        }
+
+        return json_decode($message, true);
+    }
+
+    /**
+     * @param  string                   $message
+     * @param  string                   $topic
+     * @throws AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @return array
+     */
+    private function decodeForSchema(string $message, string $topic): array
+    {
+        $mapped = [];
+        $path = $this->schemas['path'][$topic] ?? '';
+        $mapping = $this->schemas['mapping'][$topic] ?? [];
+        $items = $this->getSerializer()->decodeMessage($message, AvroSchema::parse(file_get_contents($path)));
+
+        foreach ($mapping as $from => $to) {
+            Arr::set($mapped, $from, Arr::get($items, $to));
+        }
+
+        return $mapped;
     }
 }

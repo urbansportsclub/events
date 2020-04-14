@@ -2,13 +2,14 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
+use AvroSchema;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
-use OneFit\Events\Models\Topic;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 
 /**
  * Class ProducerServiceTest.
@@ -31,6 +32,11 @@ class ProducerServiceTest extends TestCase
     private $messageMock;
 
     /**
+     * @var RecordSerializer|MockClass
+     */
+    private $serializerMock;
+
+    /**
      * @var ProducerService
      */
     private $producerService;
@@ -43,8 +49,28 @@ class ProducerServiceTest extends TestCase
         $this->producerMock = $this->createMock(Producer::class);
         $this->topicMock = $this->createMock(ProducerTopic::class);
         $this->messageMock = $this->createMock(Message::class);
+        $this->serializerMock = $this->createMock(RecordSerializer::class);
+        $schemas = [
+            'path' => [
+                'my-avro-topic' => __DIR__.'/../stubs/avro-event-schema.json',
+            ],
+            'mapping' => [
+                'my-avro-topic' => [
+                    'event' => 'event.action',
+                ],
+            ],
+            'conversion' => [
+                'my-avro-topic' => [
+                    'event' => 'strtoupper',
+                ],
+            ],
+        ];
 
-        $this->producerService = new ProducerService($this->producerMock, 3000, 3);
+        $serializer = function () {
+            return $this->serializerMock;
+        };
+
+        $this->producerService = new ProducerService($this->producerMock, $serializer, $schemas, 3000, 3);
 
         parent::setUp();
     }
@@ -67,7 +93,7 @@ class ProducerServiceTest extends TestCase
             ->method('poll')
             ->with(0);
 
-        $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
+        $this->producerService->produce($this->messageMock, 'member_domain');
     }
 
     /** @test */
@@ -97,5 +123,42 @@ class ProducerServiceTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         $this->producerService->flush();
+    }
+
+    /** @test */
+    public function can_produce_avro_encoded_message()
+    {
+        $encodedMessage = file_get_contents(__DIR__.'/../stubs/avro-event-encoded');
+
+        $this->producerMock
+            ->expects($this->once())
+            ->method('newTopic')
+            ->willReturn($this->topicMock);
+
+        $this->messageMock
+            ->expects($this->once())
+            ->method('jsonSerialize')
+            ->willReturn(['event' => 'event-triggered']);
+
+        $this->serializerMock
+            ->expects($this->once())
+            ->method('encodeRecord')
+            ->with(
+                'my-avro-topic',
+                AvroSchema::parse(file_get_contents(__DIR__.'/../stubs/avro-event-schema.json')),
+                ['event' => ['action' => 'EVENT-TRIGGERED']]
+            )->willReturn(file_get_contents(__DIR__.'/../stubs/avro-event-encoded'));
+
+        $this->topicMock
+            ->expects($this->once())
+            ->method('produce')
+            ->with(RD_KAFKA_PARTITION_UA, 0, $encodedMessage);
+
+        $this->producerMock
+            ->expects($this->once())
+            ->method('poll')
+            ->with(0);
+
+        $this->producerService->produce($this->messageMock, 'my-avro-topic');
     }
 }
