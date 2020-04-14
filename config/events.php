@@ -20,25 +20,25 @@ return [
             'base_uri' => env('SCHEMA_REGISTRY_BASE_URI'),
         ],
         'mapping' => [
-            //                        \OneFit\Events\Models\Topic::CHECKINS => [
-            //                            'payload.uuid' => 'id',
-            //                            'payload.member' => 'memberId',
-            //                            'payload.created_at' => 'createdAt',
-            //                            'payload.location' => 'partnerId',
-            //                            'payload.reservation.uuid' => 'booking.id',
-            //                            'payload.reservation.mongo_id' => 'booking.instanceId',
-            //                            'event' => 'event.action',
-            //                        ],
+//            \OneFit\Events\Models\Topic::CHECKINS => [
+//                'payload.uuid' => 'id',
+//                'payload.member' => 'memberId',
+//                'payload.created_at' => 'createdAt',
+//                'payload.location' => 'partnerId',
+//                'payload.reservation.uuid' => 'booking.id',
+//                'payload.reservation.mongo_id' => 'booking.instanceId',
+//                'event' => 'event.action',
+//            ],
         ],
         'path' => [
-            //            \OneFit\Events\Models\Topic::CHECKINS => __DIR__ . '/../vendor/onefit/kafka-event-schemas/lang/php/onefit.events.checkin.Checkin.json'
+//            \OneFit\Events\Models\Topic::CHECKINS => __DIR__ . '/../vendor/onefit/kafka-event-schemas/lang/php/onefit.events.checkin.Checkin.json',
         ],
         'conversion' => [
-            //            \OneFit\Events\Models\Topic::CHECKINS => [
-            //                'payload.member' => 'strval',
-            //                'payload.location' => 'strval',
-            //                'event' => 'strtoupper',
-            //            ],
+//            \OneFit\Events\Models\Topic::CHECKINS => [
+//                'payload.member' => 'strval',
+//                'payload.location' => 'strval',
+//                'event' => 'strtoupper',
+//            ],
         ],
     ],
     'source' => \OneFit\Events\Models\Source::UNDEFINED,

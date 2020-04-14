@@ -33,7 +33,7 @@ class CacheAdapterTest extends TestCase
         parent::setUp();
 
         $this->schemaMock = $this->createMock(AvroSchema::class);
-        $this->schemaStub = file_get_contents(__DIR__.'/../stubs/checkin.json');
+        $this->schemaStub = file_get_contents(__DIR__ . '/../stubs/avro-event-schema.json');
         $this->cacheAdapter = new CacheAdapter();
     }
 

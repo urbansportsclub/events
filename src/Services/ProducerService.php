@@ -132,6 +132,6 @@ class ProducerService
             Arr::set($mapped, $to, $converted);
         }
 
-        return $this->getSerializer()->encodeRecord($message->getType(), AvroSchema::parse(file_get_contents($path)), $mapped);
+        return $this->getSerializer()->encodeRecord($topic, AvroSchema::parse(file_get_contents($path)), $mapped);
     }
 }
