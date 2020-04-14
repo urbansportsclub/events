@@ -4,7 +4,6 @@ namespace OneFit\Events\Tests\Unit\Models;
 
 use JsonSerializable;
 use PHPUnit\Framework\TestCase;
-use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 
 /**
@@ -16,36 +15,29 @@ class MessageTest extends TestCase
     public function can_create_message()
     {
         $type = 'check_in';
-        $uuid = 'uuid';
-        $connection = 'mysql';
-        $event = 'MyEventClass';
-        $payload = 'data about the event';
+        $event = 'my-event';
+        $payload = ['event' => 'data'];
         $message = new Message();
 
         $message->setType($type)
-            ->setSource(Source::API)
-            ->setSalt('secret-salt')
+            ->setSource('api')
             ->setEvent($event)
-            ->setId($uuid)
-            ->setConnection($connection)
             ->setPayload($payload);
 
         $this->assertInstanceOf(Message::class, $message);
         $this->assertInstanceOf(JsonSerializable::class, $message);
         $this->assertSame($event, $message->getEvent());
         $this->assertSame($type, $message->getType());
-        $this->assertSame(Source::API, $message->getSource());
-        $this->assertSame($connection, $message->getConnection());
+        $this->assertSame('api', $message->getSource());
         $this->assertSame($payload, $message->getPayload());
         $this->assertSame([
-            'id' => $uuid,
             'type' => $type,
             'event' => $event,
-            'source' => Source::API,
-            'connection' => $connection,
+            'source' => 'api',
             'payload' => $payload,
         ], $message->jsonSerialize());
-        $this->assertSame(sha1(json_encode($message, JSON_FORCE_OBJECT).'secret-salt'), $message->getSignature());
+        $this->assertFalse($message->hasError());
+        $this->assertNull($message->getError());
     }
 
     /** @test */
@@ -53,10 +45,8 @@ class MessageTest extends TestCase
     {
         $data = [
             'type' => 'check_in',
-            'id' => 'uuid',
-            'connection' => 'mysql',
-            'event' => 'MyEventClass',
-            'payload' => 'data about the event',
+            'event' => 'my-event',
+            'payload' => ['event' => 'data'],
             'source' => 'api',
         ];
 
@@ -66,8 +56,33 @@ class MessageTest extends TestCase
         $this->assertSame($data['event'], $message->getEvent());
         $this->assertSame($data['type'], $message->getType());
         $this->assertSame($data['source'], $message->getSource());
-        $this->assertSame($data['connection'], $message->getConnection());
         $this->assertSame($data['payload'], $message->getPayload());
         $this->assertSame($data, $message->getOriginal());
+        $this->assertFalse($message->hasError());
+        $this->assertNull($message->getError());
+    }
+
+    /** @test */
+    public function can_verify_signature()
+    {
+        $message = new Message();
+        $salt = 'secret-salt';
+
+        $message->setSalt($salt);
+
+        $this->assertSame(sha1(json_encode($message, JSON_FORCE_OBJECT).$salt), $message->getSignature());
+        $this->assertTrue($message->hasValidSignature(sha1(json_encode($message, JSON_FORCE_OBJECT).$salt)));
+    }
+
+    /** @test */
+    public function can_set_error()
+    {
+        $message = new Message();
+        $error = 'something went wrong';
+
+        $message->setError($error);
+
+        $this->assertTrue($message->hasError());
+        $this->assertSame($error, $message->getError());
     }
 }

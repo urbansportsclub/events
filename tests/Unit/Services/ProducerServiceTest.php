@@ -5,7 +5,6 @@ namespace OneFit\Events\Tests\Unit\Services;
 use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
-use OneFit\Events\Models\Topic;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use OneFit\Events\Services\ProducerService;
@@ -78,7 +77,7 @@ class ProducerServiceTest extends TestCase
             ->method('poll')
             ->with(0);
 
-        $this->producerService->produce($this->messageMock, Topic::MEMBER_DOMAIN);
+        $this->producerService->produce($this->messageMock, 'member_domain');
     }
 
     /** @test */

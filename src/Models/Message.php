@@ -12,11 +12,6 @@ class Message implements JsonSerializable
     /**
      * @var string|null
      */
-    private $id;
-
-    /**
-     * @var string|null
-     */
     private $type;
 
     /**
@@ -30,12 +25,7 @@ class Message implements JsonSerializable
     private $source;
 
     /**
-     * @var string|null
-     */
-    private $connection;
-
-    /**
-     * @var string|null
+     * @var array|null
      */
     private $payload;
 
@@ -53,25 +43,6 @@ class Message implements JsonSerializable
      * @var array
      */
     private $original = [];
-
-    /**
-     * @return string|null
-     */
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param  string  $id
-     * @return Message
-     */
-    public function setId(string $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * @return string|null
@@ -131,37 +102,18 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getConnection(): ?string
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @param  string  $connection
-     * @return Message
-     */
-    public function setConnection(string $connection): self
-    {
-        $this->connection = $connection;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPayload(): ?string
+    public function getPayload(): ?array
     {
         return $this->payload;
     }
 
     /**
-     * @param  string  $payload
+     * @param array $payload
      * @return Message
      */
-    public function setPayload(string $payload): self
+    public function setPayload(array $payload): self
     {
         $this->payload = $payload;
 
@@ -235,11 +187,9 @@ class Message implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
             'type' => $this->type,
             'event' => $this->event,
             'source' => $this->source,
-            'connection' => $this->connection,
             'payload' => $this->payload,
         ];
     }
@@ -250,11 +200,9 @@ class Message implements JsonSerializable
      */
     public function hydrate(array $data): self
     {
-        isset($data['id']) && $this->setId($data['id']);
         isset($data['type']) && $this->setType($data['type']);
         isset($data['event']) && $this->setEvent($data['event']);
         isset($data['source']) && $this->setSource($data['source']);
-        isset($data['connection']) && $this->setConnection($data['connection']);
         isset($data['payload']) && $this->setPayload($data['payload']);
         ! empty($data) && $this->setOriginal($data);
 

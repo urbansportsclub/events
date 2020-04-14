@@ -6,7 +6,6 @@ use Closure;
 use OneFit\Events\Models\Event;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Contracts\Queue\QueueableEntity;
 
 /**
  * Class AbstractObserver.
@@ -42,54 +41,52 @@ abstract class AbstractObserver
     }
 
     /**
-     * @param QueueableEntity $entity
+     * @param array $payload
      */
-    protected function created(QueueableEntity $entity): void
+    protected function created(array $payload): void
     {
-        $message = $this->createMessage($entity, Event::EVENT_CREATED);
+        $message = $this->createMessage($payload, Event::EVENT_CREATED);
         $this->produce($message);
     }
 
     /**
-     * @param QueueableEntity $entity
+     * @param array $payload
      */
-    protected function updated(QueueableEntity $entity): void
+    protected function updated(array $payload): void
     {
-        $message = $this->createMessage($entity, Event::EVENT_UPDATED);
+        $message = $this->createMessage($payload, Event::EVENT_UPDATED);
         $this->produce($message);
     }
 
     /**
-     * @param QueueableEntity $entity
+     * @param array $payload
      */
-    protected function deleted(QueueableEntity $entity): void
+    protected function deleted(array $payload): void
     {
-        $message = $this->createMessage($entity, Event::EVENT_DELETED);
+        $message = $this->createMessage($payload, Event::EVENT_DELETED);
         $this->produce($message);
     }
 
     /**
-     * @param string          $event
-     * @param QueueableEntity $entity
+     * @param array $payload
+     * @param string $event
      */
-    protected function custom(string $event, QueueableEntity $entity): void
+    protected function custom(array $payload, string $event): void
     {
-        $message = $this->createMessage($entity, $event);
+        $message = $this->createMessage($payload, $event);
         $this->produce($message);
     }
 
     /**
-     * @param  QueueableEntity $entity
-     * @param  string          $event
+     * @param array $payload
+     * @param string $event
      * @return Message
      */
-    private function createMessage(QueueableEntity $entity, string $event): Message
+    private function createMessage(array $payload, string $event): Message
     {
         return $this->getMessage()
             ->setEvent($event)
-            ->setId(strval($entity->getQueueableId()))
-            ->setConnection(strval($entity->getQueueableConnection()))
-            ->setPayload(json_encode($entity, JSON_FORCE_OBJECT));
+            ->setPayload($payload);
     }
 
     /**

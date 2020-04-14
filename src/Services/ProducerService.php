@@ -58,7 +58,9 @@ class ProducerService
 
     /**
      * @param Message $message
-     * @param string  $topic
+     * @param string $topic
+     * @throws \AvroSchemaParseException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
     public function produce(Message $message, string $topic): void
     {
@@ -93,7 +95,7 @@ class ProducerService
     private function encodeMessage(Message $message, string $topic): string
     {
         if (isset($this->schemas['path'][$topic], $this->schemas['mapping'][$topic])) {
-            return $this->encodeForSchema($message, $this->schemas['path'][$topic], $this->schemas['mapping'][$topic]);
+            return $this->encodeForSchema($message, $topic);
         }
 
         return json_encode($message, JSON_FORCE_OBJECT);
@@ -108,20 +110,26 @@ class ProducerService
     }
 
     /**
-     * @param  Message                                                       $message
-     * @param  string                                                        $path
-     * @param  array                                                         $mapping
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @param Message $message
+     * @param string $topic
      * @return string
+     * @throws \AvroSchemaParseException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    private function encodeForSchema(Message $message, string $path, array $mapping): string
+    private function encodeForSchema(Message $message, string $topic): string
     {
         $mapped = [];
-        $items = $message->jsonSerialize();
+        $data = $message->jsonSerialize();
+        $path = $this->schemas['path'][$topic] ?? '';
+        $mapping = $this->schemas['mapping'][$topic] ?? [];
+        $conversion = $this->schemas['conversion'][$topic] ?? [];
 
         foreach ($mapping as $from => $to) {
-            Arr::set($mapped, $to, Arr::get($items, $from));
+            $converted = is_callable($conversion[$from]) ?
+                call_user_func($conversion[$from], Arr::get($data, $from)) :
+                Arr::get($data, $from);
+
+            Arr::set($mapped, $to, $converted);
         }
 
         return $this->getSerializer()->encodeRecord($message->getType(), AvroSchema::parse(file_get_contents($path)), $mapped);

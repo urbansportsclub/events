@@ -16,7 +16,7 @@ use OneFit\Events\Services\ConsumerService;
 use OneFit\Events\Services\ProducerService;
 use OneFit\Events\Observers\CreatedObserver;
 use OneFit\Events\Observers\DeletedObserver;
-use OneFit\Events\Observers\GenericObserver;
+use OneFit\Events\Observers\CustomObserver;
 use OneFit\Events\Observers\UpdatedObserver;
 use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
@@ -294,7 +294,7 @@ class EventsServiceProvider extends ServiceProvider
         $listeners = Config::get('events.listeners', []);
 
         foreach ($listeners as $type => $topic) {
-            $this->getDispatcher()->listen("{$type}.*", $this->app->make(GenericObserver::class, [
+            $this->getDispatcher()->listen("{$type}.*", $this->app->make(CustomObserver::class, [
                 'producer' => function () {
                     return $this->app->make(ProducerService::class);
                 },
