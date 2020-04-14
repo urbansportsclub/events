@@ -54,7 +54,7 @@ class ConsumerServiceTest extends TestCase
         $this->serializerMock = $this->createMock(RecordSerializer::class);
         $schemas = [
             'path' => [
-                'my-avro-topic' => __DIR__ . '/../stubs/avro-event-schema.json',
+                'my-avro-topic' => __DIR__.'/../stubs/avro-event-schema.json',
             ],
             'mapping' => [
                 'my-avro-topic' => [
@@ -205,7 +205,7 @@ class ConsumerServiceTest extends TestCase
     public function can_consume_avro_encoded_message()
     {
         $this->kafkaMessageMock->topic_name = 'my-avro-topic';
-        $this->kafkaMessageMock->payload = file_get_contents(__DIR__ . '/../stubs/avro-event-encoded');
+        $this->kafkaMessageMock->payload = file_get_contents(__DIR__.'/../stubs/avro-event-encoded');
 
         $this->consumerMock
             ->expects($this->once())
@@ -216,7 +216,7 @@ class ConsumerServiceTest extends TestCase
         $this->serializerMock
             ->expects($this->once())
             ->method('decodeMessage')
-            ->with($this->kafkaMessageMock->payload, AvroSchema::parse(file_get_contents(__DIR__ . '/../stubs/avro-event-schema.json')))
+            ->with($this->kafkaMessageMock->payload, AvroSchema::parse(file_get_contents(__DIR__.'/../stubs/avro-event-schema.json')))
             ->willReturn(['id' => 'event-uuid']);
 
         $this->messageMock
