@@ -2,6 +2,7 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
+use AvroSchema;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
 use PHPUnit\Framework\TestCase;
@@ -144,7 +145,7 @@ class ProducerServiceTest extends TestCase
             ->method('encodeRecord')
             ->with(
                 'my-avro-topic',
-                \AvroSchema::parse(file_get_contents(__DIR__ . '/../stubs/avro-event-schema.json')),
+                AvroSchema::parse(file_get_contents(__DIR__ . '/../stubs/avro-event-schema.json')),
                 ['event' => ['action' => 'EVENT-TRIGGERED']]
             )->willReturn(file_get_contents(__DIR__ . '/../stubs/avro-event-encoded'));
 
