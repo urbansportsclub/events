@@ -170,23 +170,24 @@ class ConsumerService
     private function decodeMessage(string $message, string $topic): array
     {
         if (isset($this->schemas['path'][$topic], $this->schemas['mapping'][$topic])) {
-            return $this->decodeForSchema($message, $this->schemas['path'][$topic], $this->schemas['mapping'][$topic]);
+            return $this->decodeForSchema($message, $topic);
         }
 
         return json_decode($message, true);
     }
 
     /**
-     * @param  string                   $message
-     * @param  string                   $path
-     * @param  array                    $mapping
+     * @param string $message
+     * @param string $topic
+     * @return array
      * @throws AvroSchemaParseException
      * @throws SchemaRegistryException
-     * @return array
      */
-    private function decodeForSchema(string $message, string $path, array $mapping): array
+    private function decodeForSchema(string $message, string $topic): array
     {
         $mapped = [];
+        $path = $this->schemas['path'][$topic] ?? '';
+        $mapping = $this->schemas['mapping'][$topic] ?? [];
         $items = $this->getSerializer()->decodeMessage($message, AvroSchema::parse(file_get_contents($path)));
 
         foreach ($mapping as $from => $to) {
