@@ -2,13 +2,13 @@
 
 namespace OneFit\Events\Tests\Unit\Observers;
 
-use Illuminate\Support\Facades\Log;
 use JsonSerializable;
+use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
+use Illuminate\Support\Facades\Log;
 use OneFit\Events\Observers\CustomObserver;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 class CustomObserverTest extends TestCase
 {

@@ -57,8 +57,8 @@ class ProducerService
     }
 
     /**
-     * @param Message $message
-     * @param string $topic
+     * @param  Message                                                       $message
+     * @param  string                                                        $topic
      * @throws \AvroSchemaParseException
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
@@ -110,11 +110,11 @@ class ProducerService
     }
 
     /**
-     * @param Message $message
-     * @param string $topic
-     * @return string
+     * @param  Message                                                       $message
+     * @param  string                                                        $topic
      * @throws \AvroSchemaParseException
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @return string
      */
     private function encodeForSchema(Message $message, string $topic): string
     {

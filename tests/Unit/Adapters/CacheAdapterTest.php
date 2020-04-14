@@ -3,10 +3,10 @@
 namespace OneFit\Events\Tests\Adapters;
 
 use AvroSchema;
+use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Facades\Cache;
 use OneFit\Events\Adapters\CacheAdapter;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 class CacheAdapterTest extends TestCase
 {
@@ -33,7 +33,7 @@ class CacheAdapterTest extends TestCase
         parent::setUp();
 
         $this->schemaMock = $this->createMock(AvroSchema::class);
-        $this->schemaStub = file_get_contents(__DIR__ . '/../stubs/checkin.json');
+        $this->schemaStub = file_get_contents(__DIR__.'/../stubs/checkin.json');
         $this->cacheAdapter = new CacheAdapter();
     }
 

@@ -68,7 +68,7 @@ abstract class AbstractObserver
     }
 
     /**
-     * @param array $payload
+     * @param array  $payload
      * @param string $event
      */
     protected function custom(array $payload, string $event): void
@@ -78,8 +78,8 @@ abstract class AbstractObserver
     }
 
     /**
-     * @param array $payload
-     * @param string $event
+     * @param  array   $payload
+     * @param  string  $event
      * @return Message
      */
     private function createMessage(array $payload, string $event): Message
