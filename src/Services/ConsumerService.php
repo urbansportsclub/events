@@ -177,11 +177,11 @@ class ConsumerService
     }
 
     /**
-     * @param string $message
-     * @param string $topic
-     * @return array
+     * @param  string                   $message
+     * @param  string                   $topic
      * @throws AvroSchemaParseException
      * @throws SchemaRegistryException
+     * @return array
      */
     private function decodeForSchema(string $message, string $topic): array
     {
