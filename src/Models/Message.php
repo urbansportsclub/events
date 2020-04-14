@@ -110,7 +110,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param array $payload
+     * @param  array   $payload
      * @return Message
      */
     public function setPayload(array $payload): self
