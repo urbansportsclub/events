@@ -2,13 +2,13 @@
 
 namespace OneFit\Events\Tests\Unit\Services;
 
-use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
 use PHPUnit\Framework\TestCase;
 use OneFit\Events\Models\Message;
 use OneFit\Events\Services\ProducerService;
 use PHPUnit\Framework\MockObject\MockClass;
+use FlixTech\AvroSerializer\Objects\RecordSerializer;
 
 /**
  * Class ProducerServiceTest.
