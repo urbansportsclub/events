@@ -125,7 +125,7 @@ class ProducerService
         $conversion = $this->schemas['conversion'][$topic] ?? [];
 
         foreach ($mapping as $from => $to) {
-            $converted = is_callable($conversion[$from]) ?
+            $converted = isset($conversion[$from]) ?
                 call_user_func($conversion[$from], Arr::get($data, $from)) :
                 Arr::get($data, $from);
 
