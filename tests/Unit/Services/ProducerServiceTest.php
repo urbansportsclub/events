@@ -52,7 +52,7 @@ class ProducerServiceTest extends TestCase
         $this->serializerMock = $this->createMock(RecordSerializer::class);
         $schemas = [
             'path' => [
-                'my-avro-topic' => __DIR__ . '/../stubs/avro-event-schema.json',
+                'my-avro-topic' => __DIR__.'/../stubs/avro-event-schema.json',
             ],
             'mapping' => [
                 'my-avro-topic' => [
@@ -63,7 +63,7 @@ class ProducerServiceTest extends TestCase
                 'my-avro-topic' => [
                     'event' => 'strtoupper',
                 ],
-            ]
+            ],
         ];
 
         $serializer = function () {
@@ -128,7 +128,7 @@ class ProducerServiceTest extends TestCase
     /** @test */
     public function can_produce_avro_encoded_message()
     {
-        $encodedMessage = file_get_contents(__DIR__ . '/../stubs/avro-event-encoded');
+        $encodedMessage = file_get_contents(__DIR__.'/../stubs/avro-event-encoded');
 
         $this->producerMock
             ->expects($this->once())
@@ -147,7 +147,7 @@ class ProducerServiceTest extends TestCase
                 'my-avro-topic',
                 AvroSchema::parse(file_get_contents(__DIR__ . '/../stubs/avro-event-schema.json')),
                 ['event' => ['action' => 'EVENT-TRIGGERED']]
-            )->willReturn(file_get_contents(__DIR__ . '/../stubs/avro-event-encoded'));
+            )->willReturn(file_get_contents(__DIR__.'/../stubs/avro-event-encoded'));
 
         $this->topicMock
             ->expects($this->once())
