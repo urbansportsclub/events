@@ -4,6 +4,7 @@ namespace OneFit\Events\Adapters;
 
 use AvroSchema;
 use Illuminate\Support\Facades\Cache;
+use function Widmogrod\Monad\Control\Doo\in;
 
 class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
 {
@@ -54,12 +55,17 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * @param int $schemaId
      *
      * @return AvroSchema|null
+     * @throws \AvroSchemaParseException
      */
     public function getWithId(int $schemaId)
     {
         $key = $this->makeKeyFromId($schemaId);
 
-        return Cache::has($key) ? Cache::get($key) : null;
+        if (Cache::missing($key)) {
+            return null;
+        }
+
+        return AvroSchema::parse(Cache::get($key));
     }
 
     /**
@@ -74,7 +80,11 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
     {
         $key = $this->makeKeyFromHash($hash);
 
-        return Cache::has($key) ? Cache::get($key) : null;
+        if (Cache::missing($key)) {
+            return null;
+        }
+
+        return (int) Cache::get($key);
     }
 
     /**
@@ -82,15 +92,20 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * Returns either the AvroSchema when found or `null` when not.
      *
      * @param string $subject
-     * @param int    $version
+     * @param int $version
      *
      * @return AvroSchema|null
+     * @throws \AvroSchemaParseException
      */
     public function getWithSubjectAndVersion(string $subject, int $version)
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
-        return Cache::has($key) ? Cache::get($key) : null;
+        if (Cache::missing($key)) {
+            return null;
+        }
+
+        return AvroSchema::parse(Cache::get($key));
     }
 
     /**

@@ -94,17 +94,17 @@ class CacheAdapterTest extends TestCase
     {
         $schemaId = 123;
 
-        Cache::shouldReceive('has')
+        Cache::shouldReceive('missing')
             ->once()
             ->with($this->makeKeyFromId($schemaId))
-            ->andReturn(true);
+            ->andReturn(false);
 
         Cache::shouldReceive('get')
             ->once()
             ->with($this->makeKeyFromId($schemaId))
-            ->andReturn($this->schemaMock);
+            ->andReturn($this->schemaStub);
 
-        $this->assertSame($this->schemaMock, $this->cacheAdapter->getWithId($schemaId));
+        $this->assertEquals(AvroSchema::parse($this->schemaStub), $this->cacheAdapter->getWithId($schemaId));
     }
 
     /** @test */
@@ -112,10 +112,10 @@ class CacheAdapterTest extends TestCase
     {
         $schemaId = 123;
 
-        Cache::shouldReceive('has')
+        Cache::shouldReceive('missing')
             ->once()
             ->with($this->makeKeyFromId($schemaId))
-            ->andReturn(false);
+            ->andReturn(true);
 
         Cache::shouldReceive('get')
             ->never();
@@ -127,19 +127,19 @@ class CacheAdapterTest extends TestCase
     public function can_get_id_with_hash()
     {
         $hash = 'schema-hash';
-        $schemaId = 123;
+        $schemaId = "123";
 
-        Cache::shouldReceive('has')
+        Cache::shouldReceive('missing')
             ->once()
             ->with($this->makeKeyFromHash($hash))
-            ->andReturn(true);
+            ->andReturn(false);
 
         Cache::shouldReceive('get')
             ->once()
             ->with($this->makeKeyFromHash($hash))
             ->andReturn($schemaId);
 
-        $this->assertSame($schemaId, $this->cacheAdapter->getIdWithHash($hash));
+        $this->assertSame((int) $schemaId, $this->cacheAdapter->getIdWithHash($hash));
     }
 
     /** @test */
@@ -147,10 +147,10 @@ class CacheAdapterTest extends TestCase
     {
         $hash = 'schema-hash';
 
-        Cache::shouldReceive('has')
+        Cache::shouldReceive('missing')
             ->once()
             ->with($this->makeKeyFromHash($hash))
-            ->andReturn(false);
+            ->andReturn(true);
 
         Cache::shouldReceive('get')
             ->never();
@@ -164,17 +164,17 @@ class CacheAdapterTest extends TestCase
         $subject = 'my-topic';
         $version = 2;
 
-        Cache::shouldReceive('has')
+        Cache::shouldReceive('missing')
             ->once()
             ->with($this->makeKeyFromSubjectAndVersion($subject, $version))
-            ->andReturn(true);
+            ->andReturn(false);
 
         Cache::shouldReceive('get')
             ->once()
             ->with($this->makeKeyFromSubjectAndVersion($subject, $version))
-            ->andReturn($this->schemaMock);
+            ->andReturn($this->schemaStub);
 
-        $this->assertSame($this->schemaMock, $this->cacheAdapter->getWithSubjectAndVersion($subject, $version));
+        $this->assertEquals(AvroSchema::parse($this->schemaStub), $this->cacheAdapter->getWithSubjectAndVersion($subject, $version));
     }
 
     /** @test */
@@ -183,10 +183,10 @@ class CacheAdapterTest extends TestCase
         $subject = 'my-topic';
         $version = 2;
 
-        Cache::shouldReceive('has')
+        Cache::shouldReceive('missing')
             ->once()
             ->with($this->makeKeyFromSubjectAndVersion($subject, $version))
-            ->andReturn(false);
+            ->andReturn(true);
 
         Cache::shouldReceive('get')
             ->never();
