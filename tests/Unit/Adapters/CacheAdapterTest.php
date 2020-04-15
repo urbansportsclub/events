@@ -127,7 +127,7 @@ class CacheAdapterTest extends TestCase
     public function can_get_id_with_hash()
     {
         $hash = 'schema-hash';
-        $schemaId = "123";
+        $schemaId = '123';
 
         Cache::shouldReceive('missing')
             ->once()
