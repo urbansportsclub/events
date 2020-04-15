@@ -4,7 +4,6 @@ namespace OneFit\Events\Adapters;
 
 use AvroSchema;
 use Illuminate\Support\Facades\Cache;
-use function Widmogrod\Monad\Control\Doo\in;
 
 class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
 {
@@ -54,8 +53,8 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      *
      * @param int $schemaId
      *
-     * @return AvroSchema|null
      * @throws \AvroSchemaParseException
+     * @return AvroSchema|null
      */
     public function getWithId(int $schemaId)
     {
@@ -92,10 +91,10 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * Returns either the AvroSchema when found or `null` when not.
      *
      * @param string $subject
-     * @param int $version
+     * @param int    $version
      *
-     * @return AvroSchema|null
      * @throws \AvroSchemaParseException
+     * @return AvroSchema|null
      */
     public function getWithSubjectAndVersion(string $subject, int $version)
     {
