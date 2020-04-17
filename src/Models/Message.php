@@ -25,7 +25,7 @@ class Message implements JsonSerializable
     private $source;
 
     /**
-     * @var array|null
+     * @var mixed
      */
     private $payload;
 
@@ -102,18 +102,18 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return array|null
+     * @return mixed
      */
-    public function getPayload(): ?array
+    public function getPayload()
     {
         return $this->payload;
     }
 
     /**
-     * @param  array   $payload
+     * @param  mixed   $payload
      * @return Message
      */
-    public function setPayload(array $payload): self
+    public function setPayload($payload): self
     {
         $this->payload = $payload;
 
