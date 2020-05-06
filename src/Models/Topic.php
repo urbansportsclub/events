@@ -11,4 +11,5 @@ interface Topic
     public const BUSINESS_DOMAIN = 'business_domain';
     public const NOTIFICATION_STREAM = 'notification_stream';
     public const CHECKINS = 'checkins';
+    public const PARTNERS = 'partners';
 }
