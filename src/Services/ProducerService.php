@@ -129,7 +129,7 @@ class ProducerService
                 call_user_func($conversion[$from], Arr::get($data, $from)) :
                 Arr::get($data, $from);
 
-            !is_null($converted) && Arr::set($mapped, $to, $converted);
+            ! is_null($converted) && Arr::set($mapped, $to, $converted);
         }
 
         return $this->getSerializer()->encodeRecord($topic, AvroSchema::parse(file_get_contents($path)), $mapped);
