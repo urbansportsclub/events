@@ -40,6 +40,10 @@ return [
             //                'event' => 'strtoupper',
             //            ],
         ],
+        'option' => [
+            'register_missing_schemas' => env('SCHEMA_REGISTRY_OPTION_REGISTER_MISSING_SCHEMAS', 'false'),
+            'register_missing_subjects' => env('SCHEMA_REGISTRY_OPTION_REGISTER_MISSING_SUBJECTS', 'false'),
+        ],
     ],
     'source' => \OneFit\Events\Models\Source::UNDEFINED,
     'metadata' => [

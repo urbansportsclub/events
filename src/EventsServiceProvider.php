@@ -106,9 +106,9 @@ class EventsServiceProvider extends ServiceProvider
                 $registry,
                 [
                     // If you want to auto-register missing schemas set this to true
-                    RecordSerializer::OPTION_REGISTER_MISSING_SCHEMAS => false,
+                    RecordSerializer::OPTION_REGISTER_MISSING_SCHEMAS => Config::get('events.schemas.registry.option.register_missing_schemas'),
                     // If you want to auto-register missing subjects set this to true
-                    RecordSerializer::OPTION_REGISTER_MISSING_SUBJECTS => false,
+                    RecordSerializer::OPTION_REGISTER_MISSING_SUBJECTS => Config::get('events.schemas.registry.option.register_missing_subjects'),
                 ]
             );
         });
