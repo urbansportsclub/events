@@ -123,6 +123,11 @@ class ProducerService
         $path = $this->schemas['path'][$topic] ?? '';
         $mapping = $this->schemas['mapping'][$topic] ?? [];
         $conversion = $this->schemas['conversion'][$topic] ?? [];
+        $default = $this->schemas['default'][$topic] ?? [];
+
+        foreach ($default as $key => $value) {
+            Arr::set($mapped, $key, $value);
+        }
 
         foreach ($mapping as $from => $to) {
             $converted = isset($conversion[$from]) ?
