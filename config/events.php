@@ -41,9 +41,9 @@ return [
             //            ],
         ],
         'default' => [
-//            \OneFit\Events\Models\Topic::CHECKINS => [
-//                'booking' => null,
-//            ],
+            //            \OneFit\Events\Models\Topic::CHECKINS => [
+            //                'booking' => null,
+            //            ],
         ],
         'option' => [
             'register_missing_schemas' => env('SCHEMA_REGISTRY_OPTION_REGISTER_MISSING_SCHEMAS', 'false'),
