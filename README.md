@@ -73,7 +73,7 @@ With the given configuration example, we are able to produce a custom event insi
 
 ```event('notifications.user_paid', $myUserInstance);```
 
-**Important:** Since the events package was mainly build for laravel/lumen, the model sent with the event, as all of the other eloquent models, must be an instance of *Illuminate\Contracts\Queue\QueueableEntity* interface which is a part of [illuminate/support](https://github.com/illuminate/support) package.
+**Important:** Since the events package was mainly build for laravel/lumen, the model sent with the event, as all of the other eloquent models, must be an instance of *JsonSerializable* interface.
 
 Hopefully this is enough to get you going, if you would like to find out the magic happening in the background, please checkout the implementation inside of the events package.
 

@@ -3,7 +3,6 @@
 namespace OneFit\Events\Observers;
 
 use Closure;
-use OneFit\Events\Models\Event;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Log;
 
@@ -45,7 +44,7 @@ abstract class AbstractObserver
      */
     protected function created(array $payload): void
     {
-        $message = $this->createMessage($payload, Event::EVENT_CREATED);
+        $message = $this->createMessage($payload, 'created');
         $this->produce($message);
     }
 
@@ -54,7 +53,7 @@ abstract class AbstractObserver
      */
     protected function updated(array $payload): void
     {
-        $message = $this->createMessage($payload, Event::EVENT_UPDATED);
+        $message = $this->createMessage($payload, 'updated');
         $this->produce($message);
     }
 
@@ -63,7 +62,7 @@ abstract class AbstractObserver
      */
     protected function deleted(array $payload): void
     {
-        $message = $this->createMessage($payload, Event::EVENT_DELETED);
+        $message = $this->createMessage($payload, 'deleted');
         $this->produce($message);
     }
 
