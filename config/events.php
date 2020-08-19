@@ -50,7 +50,7 @@ return [
             'register_missing_subjects' => env('SCHEMA_REGISTRY_OPTION_REGISTER_MISSING_SUBJECTS', 'false'),
         ],
     ],
-    'source' => \OneFit\Events\Models\Source::UNDEFINED,
+    'source' => 'undefined',
     'metadata' => [
         'broker' => [
             'list' => env('METADATA_BROKER_LIST', 'localhost:9092'),

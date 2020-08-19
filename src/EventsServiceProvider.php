@@ -6,7 +6,6 @@ use RdKafka\Conf;
 use RdKafka\Producer;
 use GuzzleHttp\Client;
 use RdKafka\KafkaConsumer;
-use OneFit\Events\Models\Source;
 use OneFit\Events\Models\Message;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
@@ -310,7 +309,7 @@ class EventsServiceProvider extends ServiceProvider
      */
     private function makeMessage(string $type): Message
     {
-        $source = Config::get('events.source', Source::UNDEFINED);
+        $source = Config::get('events.source', 'undefined');
         $salt = Config::get('events.message.signature.salt', '');
 
         return $this->app
