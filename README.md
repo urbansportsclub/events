@@ -89,3 +89,6 @@ Authors: see [contributors](https://github.com/onefit/events/graphs/contributors
 
 ## License
 This package is available under the MIT license. See the [LICENSE](LICENSE) file for more information.
+
+## Changelog
+See [changelog](CHANGELOG.md). 
