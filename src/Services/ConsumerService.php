@@ -169,7 +169,7 @@ class ConsumerService
      */
     private function decodeMessage(string $message, string $topic): array
     {
-        if (isset($this->schemas['path'][$topic], $this->schemas['mapping'][$topic])) {
+        if (isset($this->schemas['path'][$topic])) {
             return $this->decodeForSchema($message, $topic);
         }
 
