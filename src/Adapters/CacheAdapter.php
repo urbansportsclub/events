@@ -15,7 +15,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      *
      * @return void
      */
-    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
+    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
         Cache::add($this->makeKeyFromId($schemaId), (string) $schema, null);
     }
@@ -29,7 +29,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      *
      * @return void
      */
-    public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version)
+    public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
         Cache::add($this->makeKeyFromSubjectAndVersion($subject, $version), (string) $schema, null);
     }
@@ -42,7 +42,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      *
      * @return void
      */
-    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash)
+    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
         Cache::add($this->makeKeyFromHash($schemaHash), $schemaId, null);
     }
@@ -56,7 +56,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * @throws \AvroSchemaParseException
      * @return AvroSchema|null
      */
-    public function getWithId(int $schemaId)
+    public function getWithId(int $schemaId): ?AvroSchema
     {
         $key = $this->makeKeyFromId($schemaId);
 
@@ -75,7 +75,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      *
      * @return int|null
      */
-    public function getIdWithHash(string $hash)
+    public function getIdWithHash(string $hash): ?int
     {
         $key = $this->makeKeyFromHash($hash);
 
@@ -96,7 +96,7 @@ class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
      * @throws \AvroSchemaParseException
      * @return AvroSchema|null
      */
-    public function getWithSubjectAndVersion(string $subject, int $version)
+    public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
