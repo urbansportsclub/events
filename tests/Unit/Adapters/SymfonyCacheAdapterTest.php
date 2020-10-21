@@ -27,7 +27,7 @@ class SymfonyCacheAdapterTest extends TestCase
      */
     private $cacheAdapter;
 
-    /** @var MockObject|FilesystemAdapter  */
+    /** @var MockObject|FilesystemAdapter */
     private $cacheMock;
 
     /**
