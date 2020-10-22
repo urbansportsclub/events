@@ -7,7 +7,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
 {
-    /** @var FilesystemAdapter  */
+    /** @var FilesystemAdapter */
     private $cache;
 
     public function __construct(FilesystemAdapter $cache)
@@ -75,7 +75,7 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
         $key = $this->makeKeyFromId($schemaId);
         $item = $this->cache->getItem($key);
 
-        if (!$item->isHit()) {
+        if (! $item->isHit()) {
             return null;
         }
 
@@ -94,7 +94,7 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     {
         $key = $this->makeKeyFromHash($hash);
 
-        if (!$this->cache->hasItem($key)) {
+        if (! $this->cache->hasItem($key)) {
             return null;
         }
 
@@ -115,7 +115,7 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
-        if (!$this->cache->hasItem($key)) {
+        if (! $this->cache->hasItem($key)) {
             return null;
         }
 
