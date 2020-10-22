@@ -1,0 +1,42 @@
+services:
+  OneFit\Events\Models\Message:
+
+  guzzle.kafka.client:
+    class: 'GuzzleHttp\Client'
+    arguments:
+      $config:
+        base_uri: "https://schema-registry.app.fit.ci/"
+
+  FlixTech\SchemaRegistryApi\Registry\PromisingRegistry:
+    arguments:
+      $client: '@guzzle.kafka.client'
+
+  OneFit\Events\Adapters\CacheAdapter:
+
+  FlixTech\SchemaRegistryApi\Registry\CachedRegistry:
+    arguments:
+      $registry: '@FlixTech\SchemaRegistryApi\Registry\PromisingRegistry'
+      $cacheAdapter: '@OneFit\Events\Adapters\SymfonyCacheAdapter'
+
+
+  FlixTech\AvroSerializer\Objects\RecordSerializer:
+    factory: ['@App\Services\RecordSerializerServiceFactory', 'create']
+
+  RdKafka\Conf:
+    calls:
+      - set: ['auto.offset.reset', 'smallest']
+      - set: ['enable.auto.commit', true]
+      - set: ['enable.auto.offset.store', true]
+      - set: ['group.id', 'nuevotestrandom']
+      - set: ['metadata.broker.list', '127.0.0.1']
+
+  RdKafka\KafkaConsumer:
+    arguments:
+      $conf: '@RdKafka\Conf'
+
+  OneFit\Events\Services\ConsumerService:
+    arguments:
+      $consumer: '@RdKafka\KafkaConsumer'
+      $message: '@OneFit\Events\Models\Message'
+      $serializer: '@FlixTech\AvroSerializer\Objects\RecordSerializer'
+      $schemas: []
