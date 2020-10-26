@@ -4,11 +4,11 @@ namespace OneFit\Events\Services;
 
 use Closure;
 use AvroSchema;
+use Monolog\Logger;
 use RdKafka\KafkaConsumer;
 use Illuminate\Support\Arr;
 use AvroSchemaParseException;
 use OneFit\Events\Models\Message;
-use Illuminate\Support\Facades\Log;
 use RdKafka\Exception as RdKafkaException;
 use FlixTech\AvroSerializer\Objects\RecordSerializer;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
@@ -39,24 +39,33 @@ class ConsumerService
     private $schemas;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * ConsumerService constructor.
+     *
      * @param KafkaConsumer $consumer
      * @param Message       $message
      * @param Closure       $serializer
      * @param array         $schemas
+     * @param Logger|null   $logger
      */
-    public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas)
+    public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas, ?Logger $logger = null)
     {
         $this->consumer = $consumer;
         $this->message = $message;
         $this->serializer = $serializer;
         $this->schemas = $schemas;
+        $this->logger = $logger;
     }
 
     /**
      * @param array $topics
-     *@throws RdKafkaException
+     *
      * @return ConsumerService
+     * @throws RdKafkaException
      */
     public function subscribe(array $topics): self
     {
@@ -66,10 +75,11 @@ class ConsumerService
     }
 
     /**
-     * @param  int                     $timeout
-     * @throws SchemaRegistryException
-     * @throws RdKafkaException
+     * @param int $timeout
+     *
      * @return Message
+     * @throws RdKafkaException
+     * @throws SchemaRegistryException
      */
     public function consume(int $timeout): Message
     {
@@ -87,61 +97,21 @@ class ConsumerService
                     break;
                 default:
                     $message->setError($kafkaMessage->errstr());
-                    Log::error($kafkaMessage->errstr(), [
+                    $this->logger->error($kafkaMessage->errstr(), [
                         'message' => $kafkaMessage,
                     ]);
                     break;
             }
         } catch (\Exception $ex) {
             $message->setError($ex->getMessage());
-            Log::error($ex->getMessage(), [
+            $this->logger->error($ex->getMessage(), [
                 'exception' => $ex,
-                'metadata' => $this->consumer->getMetadata(false, null, $timeout),
-                'topics' => $this->consumer->getSubscription(),
+                'metadata'  => $this->consumer->getMetadata(false, null, $timeout),
+                'topics'    => $this->consumer->getSubscription(),
             ]);
         }
 
         return $message;
-    }
-
-    /**
-     * @throws RdKafkaException
-     */
-    public function commit(): void
-    {
-        try {
-            $this->consumer->commit();
-        } catch (\Exception $ex) {
-            Log::error($ex->getMessage(), [
-                'exception' => $ex,
-                'metadata' => $this->consumer->getMetadata(false, null, 60e3),
-                'topics' => $this->consumer->getSubscription(),
-            ]);
-        }
-    }
-
-    /**
-     * @throws RdKafkaException
-     */
-    public function commitAsync(): void
-    {
-        try {
-            $this->consumer->commitAsync();
-        } catch (\Exception $ex) {
-            Log::error($ex->getMessage(), [
-                'exception' => $ex,
-                'metadata' => $this->consumer->getMetadata(false, null, 60e3),
-                'topics' => $this->consumer->getSubscription(),
-            ]);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function close(): void
-    {
-        $this->consumer->close();
     }
 
     /**
@@ -153,19 +123,12 @@ class ConsumerService
     }
 
     /**
-     * @return RecordSerializer
-     */
-    private function getSerializer(): RecordSerializer
-    {
-        return call_user_func($this->serializer);
-    }
-
-    /**
-     * @param  string                   $message
-     * @param  string                   $topic
-     * @throws AvroSchemaParseException
-     * @throws SchemaRegistryException
+     * @param string $message
+     * @param string $topic
+     *
      * @return array
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     private function decodeMessage(string $message, string $topic): array
     {
@@ -177,11 +140,12 @@ class ConsumerService
     }
 
     /**
-     * @param  string                   $message
-     * @param  string                   $topic
-     * @throws AvroSchemaParseException
-     * @throws SchemaRegistryException
+     * @param string $message
+     * @param string $topic
+     *
      * @return array
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     private function decodeForSchema(string $message, string $topic): array
     {
@@ -195,5 +159,53 @@ class ConsumerService
         }
 
         return $mapped;
+    }
+
+    /**
+     * @return RecordSerializer
+     */
+    private function getSerializer(): RecordSerializer
+    {
+        return call_user_func($this->serializer);
+    }
+
+    /**
+     * @throws RdKafkaException
+     */
+    public function commit(): void
+    {
+        try {
+            $this->consumer->commit();
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage(), [
+                'exception' => $ex,
+                'metadata'  => $this->consumer->getMetadata(false, null, 60e3),
+                'topics'    => $this->consumer->getSubscription(),
+            ]);
+        }
+    }
+
+    /**
+     * @throws RdKafkaException
+     */
+    public function commitAsync(): void
+    {
+        try {
+            $this->consumer->commitAsync();
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage(), [
+                'exception' => $ex,
+                'metadata'  => $this->consumer->getMetadata(false, null, 60e3),
+                'topics'    => $this->consumer->getSubscription(),
+            ]);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function close(): void
+    {
+        $this->consumer->close();
     }
 }

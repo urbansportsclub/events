@@ -1,3 +1,10 @@
+parameters:
+  CONSUMER_OFFSET_RESET_DEFAULT: 'earliest'
+  CONSUMER_AUTO_COMMIT_DEFAULT: 'false'
+  CONSUMER_STORE_OFFSET_DEFAULT: 'false'
+  CONSUMER_GROUP_ID_DEFAULT: 'default'
+  KAFKA_BROKER_LIST_DEFAULT: '127.0.0.1'
+
 services:
   OneFit\Events\Models\Message:
 
@@ -24,11 +31,11 @@ services:
 
   RdKafka\Conf:
     calls:
-      - set: ['auto.offset.reset', 'smallest']
-      - set: ['enable.auto.commit', true]
-      - set: ['enable.auto.offset.store', true]
-      - set: ['group.id', 'nuevotestrandom']
-      - set: ['metadata.broker.list', '127.0.0.1']
+      - set: ['auto.offset.reset', '%env(default:CONSUMER_OFFSET_RESET_DEFAULT:CONSUMER_OFFSET_RESET)%']
+      - set: ['enable.auto.commit', '%env(default:CONSUMER_AUTO_COMMIT_DEFAULT:CONSUMER_AUTO_COMMIT)%']
+      - set: ['enable.auto.offset.store', '%env(default:CONSUMER_STORE_OFFSET_DEFAULT:CONSUMER_STORE_OFFSET)%']
+      - set: ['group.id', '%env(default:CONSUMER_GROUP_ID_DEFAULT:CONSUMER_GROUP_ID)%']
+      - set: ['metadata.broker.list', '%env(default:KAFKA_BROKER_LIST_DEFAULT:KAFKA_BROKER_LIST)%']
 
   RdKafka\KafkaConsumer:
     arguments:
@@ -39,4 +46,4 @@ services:
       $consumer: '@RdKafka\KafkaConsumer'
       $message: '@OneFit\Events\Models\Message'
       $serializer: '@FlixTech\AvroSerializer\Objects\RecordSerializer'
-      $schemas: []
+      $schemas: "@=container.hasParameter('kafka') ? parameter('kafka')['schemas'] : []"
