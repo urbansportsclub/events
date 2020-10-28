@@ -64,8 +64,8 @@ class ConsumerService
     /**
      * @param array $topics
      *
-     * @return ConsumerService
      * @throws RdKafkaException
+     * @return ConsumerService
      */
     public function subscribe(array $topics): self
     {
@@ -77,9 +77,9 @@ class ConsumerService
     /**
      * @param int $timeout
      *
-     * @return Message
      * @throws RdKafkaException
      * @throws SchemaRegistryException
+     * @return Message
      */
     public function consume(int $timeout): Message
     {
@@ -126,9 +126,9 @@ class ConsumerService
      * @param string $message
      * @param string $topic
      *
-     * @return array
      * @throws SchemaRegistryException
      * @throws AvroSchemaParseException
+     * @return array
      */
     private function decodeMessage(string $message, string $topic): array
     {
@@ -143,9 +143,9 @@ class ConsumerService
      * @param string $message
      * @param string $topic
      *
-     * @return array
      * @throws SchemaRegistryException
      * @throws AvroSchemaParseException
+     * @return array
      */
     private function decodeForSchema(string $message, string $topic): array
     {
