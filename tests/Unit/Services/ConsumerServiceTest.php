@@ -3,6 +3,7 @@
 namespace OneFit\Events\Tests\Unit\Services;
 
 use AvroSchema;
+use Monolog\Logger;
 use RdKafka\Metadata;
 use RdKafka\KafkaConsumer;
 use PHPUnit\Framework\TestCase;
@@ -67,7 +68,9 @@ class ConsumerServiceTest extends TestCase
             return $this->serializerMock;
         };
 
-        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock, $serializer, $schemas);
+        $logger = $this->createMock(Logger::class);
+
+        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock, $serializer, $schemas, $logger);
     }
 
     /** @test */
