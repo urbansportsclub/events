@@ -27,7 +27,7 @@ class SymfonyCacheAdapter implements CacheAdapter
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
         $item = $this->cache->getItem($this->makeKeyFromId($schemaId));
-        $item->set((string)$schema);
+        $item->set((string) $schema);
         $this->cache->save($item);
     }
 
@@ -54,7 +54,7 @@ class SymfonyCacheAdapter implements CacheAdapter
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
         $item = $this->cache->getItem($this->makeKeyFromSubjectAndVersion($subject, $version));
-        $item->set((string)$schema);
+        $item->set((string) $schema);
         $this->cache->save($item);
     }
 
@@ -80,7 +80,7 @@ class SymfonyCacheAdapter implements CacheAdapter
     public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
         $item = $this->cache->getItem($this->makeKeyFromHash($schemaHash));
-        $item->set((int)$schemaId);
+        $item->set((int) $schemaId);
         $this->cache->save($item);
     }
 
@@ -100,15 +100,15 @@ class SymfonyCacheAdapter implements CacheAdapter
      *
      * @param int $schemaId
      *
-     * @return AvroSchema|null
      * @throws \AvroSchemaParseException
+     * @return AvroSchema|null
      */
     public function getWithId(int $schemaId): ?AvroSchema
     {
         $key = $this->makeKeyFromId($schemaId);
         $item = $this->cache->getItem($key);
 
-        if (!$item->isHit()) {
+        if (! $item->isHit()) {
             return null;
         }
 
@@ -127,11 +127,11 @@ class SymfonyCacheAdapter implements CacheAdapter
     {
         $key = $this->makeKeyFromHash($hash);
 
-        if (!$this->cache->hasItem($key)) {
+        if (! $this->cache->hasItem($key)) {
             return null;
         }
 
-        return (int)$this->cache->getItem($key)->get();
+        return (int) $this->cache->getItem($key)->get();
     }
 
     /**
@@ -141,14 +141,14 @@ class SymfonyCacheAdapter implements CacheAdapter
      * @param string $subject
      * @param int    $version
      *
-     * @return AvroSchema|null
      * @throws \AvroSchemaParseException
+     * @return AvroSchema|null
      */
     public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
-        if (!$this->cache->hasItem($key)) {
+        if (! $this->cache->hasItem($key)) {
             return null;
         }
 
