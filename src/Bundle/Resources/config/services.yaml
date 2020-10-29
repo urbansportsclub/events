@@ -6,6 +6,11 @@ parameters:
   KAFKA_BROKER_LIST_DEFAULT: '127.0.0.1'
 
 services:
+
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
   OneFit\Events\Models\Message:
 
   guzzle.kafka.client:
@@ -14,17 +19,18 @@ services:
       $config:
         base_uri: "https://schema-registry.app.fit.ci/"
 
-  FlixTech\SchemaRegistryApi\Registry\PromisingRegistry:
+  FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry:
     arguments:
       $client: '@guzzle.kafka.client'
 
   OneFit\Events\Adapters\CacheAdapter:
 
-  FlixTech\SchemaRegistryApi\Registry\CachedRegistry:
+  FlixTech\SchemaRegistryApi\Registry\Decorators\CachingDecorator:
     arguments:
-      $registry: '@FlixTech\SchemaRegistryApi\Registry\PromisingRegistry'
+      $registry: '@FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry'
       $cacheAdapter: '@OneFit\Events\Adapters\SymfonyCacheAdapter'
 
+  OneFit\Events\Services\RecordSerializerServiceFactory: ~
 
   FlixTech\AvroSerializer\Objects\RecordSerializer:
     factory: ['@OneFit\Events\Services\RecordSerializerServiceFactory', 'create']
