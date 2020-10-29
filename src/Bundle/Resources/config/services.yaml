@@ -27,7 +27,7 @@ services:
 
 
   FlixTech\AvroSerializer\Objects\RecordSerializer:
-    factory: ['@App\Services\RecordSerializerServiceFactory', 'create']
+    factory: ['@OneFit\Events\Services\RecordSerializerServiceFactory', 'create']
 
   RdKafka\Conf:
     calls:

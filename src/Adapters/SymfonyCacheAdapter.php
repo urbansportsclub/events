@@ -4,8 +4,9 @@ namespace OneFit\Events\Adapters;
 
 use AvroSchema;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter;
 
-class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
+class SymfonyCacheAdapter implements CacheAdapter
 {
     /** @var FilesystemAdapter */
     private $cache;
@@ -26,8 +27,19 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
         $item = $this->cache->getItem($this->makeKeyFromId($schemaId));
-        $item->set((string) $schema);
+        $item->set((string)$schema);
         $this->cache->save($item);
+    }
+
+    /**s
+     *
+     * @param int $key
+     *
+     * @return string
+     */
+    private function makeKeyFromId(int $key): string
+    {
+        return sha1(sprintf('%s::%s::%d', self::class, 'id', $key));
     }
 
     /**
@@ -42,8 +54,19 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
         $item = $this->cache->getItem($this->makeKeyFromSubjectAndVersion($subject, $version));
-        $item->set((string) $schema);
+        $item->set((string)$schema);
         $this->cache->save($item);
+    }
+
+    /**
+     * @param string $subject
+     * @param int    $version
+     *
+     * @return string
+     */
+    private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
+    {
+        return sha1(sprintf('%s::%s::%s_%d', self::class, 'subject_version', $subject, $version));
     }
 
     /**
@@ -57,8 +80,18 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
         $item = $this->cache->getItem($this->makeKeyFromHash($schemaHash));
-        $item->set((int) $schemaId);
+        $item->set((int)$schemaId);
         $this->cache->save($item);
+    }
+
+    /**
+     * @param string $schemaHash
+     *
+     * @return string
+     */
+    private function makeKeyFromHash(string $schemaHash): string
+    {
+        return sha1(sprintf('%s::%s::%s', self::class, 'hash', $schemaHash));
     }
 
     /**
@@ -67,15 +100,15 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
      *
      * @param int $schemaId
      *
-     * @throws \AvroSchemaParseException
      * @return AvroSchema|null
+     * @throws \AvroSchemaParseException
      */
     public function getWithId(int $schemaId): ?AvroSchema
     {
         $key = $this->makeKeyFromId($schemaId);
         $item = $this->cache->getItem($key);
 
-        if (! $item->isHit()) {
+        if (!$item->isHit()) {
             return null;
         }
 
@@ -94,11 +127,11 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     {
         $key = $this->makeKeyFromHash($hash);
 
-        if (! $this->cache->hasItem($key)) {
+        if (!$this->cache->hasItem($key)) {
             return null;
         }
 
-        return (int) $this->cache->getItem($key)->get();
+        return (int)$this->cache->getItem($key)->get();
     }
 
     /**
@@ -108,14 +141,14 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
      * @param string $subject
      * @param int    $version
      *
-     * @throws \AvroSchemaParseException
      * @return AvroSchema|null
+     * @throws \AvroSchemaParseException
      */
     public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
-        if (! $this->cache->hasItem($key)) {
+        if (!$this->cache->hasItem($key)) {
             return null;
         }
 
@@ -157,33 +190,5 @@ class SymfonyCacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheA
     public function hasSchemaForSubjectAndVersion(string $subject, int $version): bool
     {
         return $this->cache->hasItem($this->makeKeyFromSubjectAndVersion($subject, $version));
-    }
-
-    /**s
-     * @param int $key
-     * @return string
-     */
-    private function makeKeyFromId(int $key): string
-    {
-        return sha1(sprintf('%s::%s::%d', self::class, 'id', $key));
-    }
-
-    /**
-     * @param  string $subject
-     * @param  int    $version
-     * @return string
-     */
-    private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
-    {
-        return sha1(sprintf('%s::%s::%s_%d', self::class, 'subject_version', $subject, $version));
-    }
-
-    /**
-     * @param  string $schemaHash
-     * @return string
-     */
-    private function makeKeyFromHash(string $schemaHash): string
-    {
-        return sha1(sprintf('%s::%s::%s', self::class, 'hash', $schemaHash));
     }
 }

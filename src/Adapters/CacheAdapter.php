@@ -4,8 +4,9 @@ namespace OneFit\Events\Adapters;
 
 use AvroSchema;
 use Illuminate\Support\Facades\Cache;
+use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter as CacheAdapterInterface;
 
-class CacheAdapter implements \FlixTech\SchemaRegistryApi\Registry\CacheAdapter
+class CacheAdapter implements CacheAdapterInterface
 {
     /**
      * Caches an AvroSchema with a given global schema id.
