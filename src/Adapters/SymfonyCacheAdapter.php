@@ -4,7 +4,7 @@ namespace OneFit\Events\Adapters;
 
 use AvroSchema;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter;
+use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
 class SymfonyCacheAdapter implements CacheAdapter
 {
