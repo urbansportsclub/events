@@ -3,8 +3,8 @@
 namespace OneFit\Events\Adapters;
 
 use AvroSchema;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class SymfonyCacheAdapter implements CacheAdapter
 {
