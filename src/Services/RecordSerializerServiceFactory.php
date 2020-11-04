@@ -9,7 +9,7 @@ class RecordSerializerServiceFactory
 {
     private static $registry;
 
-    public function __construct(Registry\GuzzlePromiseAsyncRegistry $registry)
+    public function __construct(Registry\PromisingRegistry $registry)
     {
         static::$registry = $registry;
     }

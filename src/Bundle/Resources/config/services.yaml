@@ -19,15 +19,15 @@ services:
       $config:
         base_uri: "https://schema-registry.app.fit.ci/"
 
-  FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry:
+  FlixTech\SchemaRegistryApi\Registry\PromisingRegistry:
     arguments:
       $client: '@guzzle.kafka.client'
 
   OneFit\Events\Adapters\CacheAdapter:
 
-  FlixTech\SchemaRegistryApi\Registry\Decorators\CachingDecorator:
+  FlixTech\SchemaRegistryApi\Registry\CachedRegistry:
     arguments:
-      $registry: '@FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry'
+      $registry: '@FlixTech\SchemaRegistryApi\Registry\PromisingRegistry'
       $cacheAdapter: '@OneFit\Events\Adapters\SymfonyCacheAdapter'
 
   OneFit\Events\Services\RecordSerializerServiceFactory: ~
