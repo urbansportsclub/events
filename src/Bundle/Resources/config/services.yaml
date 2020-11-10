@@ -1,0 +1,55 @@
+parameters:
+  CONSUMER_OFFSET_RESET_DEFAULT: 'earliest'
+  CONSUMER_AUTO_COMMIT_DEFAULT: 'false'
+  CONSUMER_STORE_OFFSET_DEFAULT: 'false'
+  CONSUMER_GROUP_ID_DEFAULT: 'default'
+  KAFKA_BROKER_LIST_DEFAULT: '127.0.0.1'
+
+services:
+
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  OneFit\Events\Models\Message:
+
+  guzzle.kafka.client:
+    class: 'GuzzleHttp\Client'
+    arguments:
+      $config:
+        base_uri: "%env(SCHEMA_REGISTRY_URL)%"
+
+  FlixTech\SchemaRegistryApi\Registry\PromisingRegistry:
+    arguments:
+      $client: '@guzzle.kafka.client'
+
+  OneFit\Events\Adapters\CacheAdapter:
+
+  FlixTech\SchemaRegistryApi\Registry\CachedRegistry:
+    arguments:
+      $registry: '@FlixTech\SchemaRegistryApi\Registry\PromisingRegistry'
+      $cacheAdapter: '@OneFit\Events\Adapters\SymfonyCacheAdapter'
+
+  OneFit\Events\Services\RecordSerializerServiceFactory: ~
+
+  FlixTech\AvroSerializer\Objects\RecordSerializer:
+    factory: ['@OneFit\Events\Services\RecordSerializerServiceFactory', 'create']
+
+  RdKafka\Conf:
+    calls:
+      - set: ['auto.offset.reset', '%env(default:CONSUMER_OFFSET_RESET_DEFAULT:CONSUMER_OFFSET_RESET)%']
+      - set: ['enable.auto.commit', '%env(default:CONSUMER_AUTO_COMMIT_DEFAULT:CONSUMER_AUTO_COMMIT)%']
+      - set: ['enable.auto.offset.store', '%env(default:CONSUMER_STORE_OFFSET_DEFAULT:CONSUMER_STORE_OFFSET)%']
+      - set: ['group.id', '%env(default:CONSUMER_GROUP_ID_DEFAULT:CONSUMER_GROUP_ID)%']
+      - set: ['metadata.broker.list', '%env(default:KAFKA_BROKER_LIST_DEFAULT:KAFKA_BROKER_LIST)%']
+
+  RdKafka\KafkaConsumer:
+    arguments:
+      $conf: '@RdKafka\Conf'
+
+  OneFit\Events\Services\ConsumerService:
+    arguments:
+      $consumer: '@RdKafka\KafkaConsumer'
+      $message: '@OneFit\Events\Models\Message'
+      $serializer: '@FlixTech\AvroSerializer\Objects\RecordSerializer'
+      $schemas: "@=container.hasParameter('kafka') ? parameter('kafka')['schemas'] : []"

@@ -3,6 +3,7 @@
 namespace OneFit\Events;
 
 use RdKafka\Conf;
+use Monolog\Logger;
 use RdKafka\Producer;
 use GuzzleHttp\Client;
 use RdKafka\KafkaConsumer;
@@ -175,7 +176,8 @@ class EventsServiceProvider extends ServiceProvider
                 $consumer,
                 $app->make(Message::class),
                 $serializer,
-                Config::get('events.schemas', [])
+                Config::get('events.schemas', []),
+                $app->make(Logger::class)
             );
         });
     }

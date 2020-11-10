@@ -1,4 +1,4 @@
-# Laravel/Lumen 5.x 6.x Kafka Events
+# Laravel/Lumen 5.x 6.x / Symfony 4.x 5.x Kafka Events
 
 [![Build Status](https://fit.ci/buildStatus/icon?job=events%2Fmaster)](https://fit.ci/job/events/job/master/)
 [![StyleCI](https://styleci.io/repos/221408130/shield?branch=master)](https://styleci.io/repos/221408130)
@@ -6,6 +6,8 @@
 [![Supported librdkafka versions: >= 0.11](https://img.shields.io/badge/librdkafka-%3E%3D%200.11-blue.svg)](https://github.com/edenhill/librdkafka/releases) [![Supported Kafka versions: >= 0.8](https://img.shields.io/badge/kafka-%3E%3D%200.8-blue.svg)](https://github.com/edenhill/librdkafka/wiki/Broker-version-compatibility) ![Supported PHP versions: 7.x](https://img.shields.io/badge/php-%207.x-blue.svg)
 
 This package contains services to produce and consume events using kafka stream processing. The library supports both laravel 5.x and 6.x versions.
+
+It also has partial [support for Symfony 4.x and 5.x versions](docs/SYMFONY.md), in which you can inject the consumer service using the bundle injection. (```OneFit\Events\Bundle\EventsBundle```)
 
 Package uses [arnaud-lb/php-rdkafka](https://github.com/arnaud-lb/php-rdkafka) library which is a php extension wrapper around [edenhill/librdkafka](https://github.com/edenhill/librdkafka) library.
 

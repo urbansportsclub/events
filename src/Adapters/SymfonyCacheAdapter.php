@@ -3,11 +3,19 @@
 namespace OneFit\Events\Adapters;
 
 use AvroSchema;
-use Illuminate\Support\Facades\Cache;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter as CacheAdapterInterface;
+use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-class CacheAdapter implements CacheAdapterInterface
+class SymfonyCacheAdapter implements CacheAdapter
 {
+    /** @var FilesystemAdapter */
+    private $cache;
+
+    public function __construct(FilesystemAdapter $cache)
+    {
+        $this->cache = $cache;
+    }
+
     /**
      * Caches an AvroSchema with a given global schema id.
      *
@@ -18,7 +26,20 @@ class CacheAdapter implements CacheAdapterInterface
      */
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
-        Cache::add($this->makeKeyFromId($schemaId), (string) $schema, null);
+        $item = $this->cache->getItem($this->makeKeyFromId($schemaId));
+        $item->set((string) $schema);
+        $this->cache->save($item);
+    }
+
+    /**s
+     *
+     * @param int $key
+     *
+     * @return string
+     */
+    private function makeKeyFromId(int $key): string
+    {
+        return sha1(sprintf('%s::%s::%d', self::class, 'id', $key));
     }
 
     /**
@@ -32,7 +53,20 @@ class CacheAdapter implements CacheAdapterInterface
      */
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
-        Cache::add($this->makeKeyFromSubjectAndVersion($subject, $version), (string) $schema, null);
+        $item = $this->cache->getItem($this->makeKeyFromSubjectAndVersion($subject, $version));
+        $item->set((string) $schema);
+        $this->cache->save($item);
+    }
+
+    /**
+     * @param string $subject
+     * @param int    $version
+     *
+     * @return string
+     */
+    private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
+    {
+        return sha1(sprintf('%s::%s::%s_%d', self::class, 'subject_version', $subject, $version));
     }
 
     /**
@@ -45,7 +79,19 @@ class CacheAdapter implements CacheAdapterInterface
      */
     public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
-        Cache::add($this->makeKeyFromHash($schemaHash), $schemaId, null);
+        $item = $this->cache->getItem($this->makeKeyFromHash($schemaHash));
+        $item->set($schemaId);
+        $this->cache->save($item);
+    }
+
+    /**
+     * @param string $schemaHash
+     *
+     * @return string
+     */
+    private function makeKeyFromHash(string $schemaHash): string
+    {
+        return sha1(sprintf('%s::%s::%s', self::class, 'hash', $schemaHash));
     }
 
     /**
@@ -60,12 +106,13 @@ class CacheAdapter implements CacheAdapterInterface
     public function getWithId(int $schemaId): ?AvroSchema
     {
         $key = $this->makeKeyFromId($schemaId);
+        $item = $this->cache->getItem($key);
 
-        if (Cache::missing($key)) {
+        if (! $item->isHit()) {
             return null;
         }
 
-        return AvroSchema::parse(Cache::get($key));
+        return AvroSchema::parse($item->get());
     }
 
     /**
@@ -80,11 +127,11 @@ class CacheAdapter implements CacheAdapterInterface
     {
         $key = $this->makeKeyFromHash($hash);
 
-        if (Cache::missing($key)) {
+        if (! $this->cache->hasItem($key)) {
             return null;
         }
 
-        return (int) Cache::get($key);
+        return (int) $this->cache->getItem($key)->get();
     }
 
     /**
@@ -101,11 +148,11 @@ class CacheAdapter implements CacheAdapterInterface
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
-        if (Cache::missing($key)) {
+        if (! $this->cache->hasItem($key)) {
             return null;
         }
 
-        return AvroSchema::parse(Cache::get($key));
+        return AvroSchema::parse($this->cache->getItem($key)->get());
     }
 
     /**
@@ -117,7 +164,7 @@ class CacheAdapter implements CacheAdapterInterface
      */
     public function hasSchemaForId(int $schemaId): bool
     {
-        return Cache::has($this->makeKeyFromId($schemaId));
+        return $this->cache->hasItem($this->makeKeyFromId($schemaId));
     }
 
     /**
@@ -129,7 +176,7 @@ class CacheAdapter implements CacheAdapterInterface
      */
     public function hasSchemaIdForHash(string $schemaHash): bool
     {
-        return Cache::has($this->makeKeyFromHash($schemaHash));
+        return $this->cache->hasItem($this->makeKeyFromHash($schemaHash));
     }
 
     /**
@@ -142,34 +189,6 @@ class CacheAdapter implements CacheAdapterInterface
      */
     public function hasSchemaForSubjectAndVersion(string $subject, int $version): bool
     {
-        return Cache::has($this->makeKeyFromSubjectAndVersion($subject, $version));
-    }
-
-    /**s
-     * @param int $key
-     * @return string
-     */
-    private function makeKeyFromId(int $key): string
-    {
-        return sha1(sprintf('%s::%s::%d', self::class, 'id', $key));
-    }
-
-    /**
-     * @param  string $subject
-     * @param  int    $version
-     * @return string
-     */
-    private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
-    {
-        return sha1(sprintf('%s::%s::%s_%d', self::class, 'subject_version', $subject, $version));
-    }
-
-    /**
-     * @param  string $schemaHash
-     * @return string
-     */
-    private function makeKeyFromHash(string $schemaHash): string
-    {
-        return sha1(sprintf('%s::%s::%s', self::class, 'hash', $schemaHash));
+        return $this->cache->hasItem($this->makeKeyFromSubjectAndVersion($subject, $version));
     }
 }
