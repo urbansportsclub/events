@@ -27,7 +27,7 @@ class SymfonyCacheAdapter implements CacheAdapter
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
         $item = $this->cache->getItem($this->makeKeyFromId($schemaId));
-        $item->set($schema);
+        $item->set((string) $schema);
         $this->cache->save($item);
     }
 
@@ -54,7 +54,7 @@ class SymfonyCacheAdapter implements CacheAdapter
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
         $item = $this->cache->getItem($this->makeKeyFromSubjectAndVersion($subject, $version));
-        $item->set($schema);
+        $item->set((string) $schema);
         $this->cache->save($item);
     }
 
