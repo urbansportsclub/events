@@ -36,6 +36,7 @@ All of the message parameters are optional strings, created for our business nee
 
 **Note:** This example assumes that a reader is familiar with kafka terminology, and knows what group id means/does.
 
+**Symfony:** If you are looking for the consumer implementation in symfony, [take a look to this link](docs/SYMFONY.md).
 ```
 <?php
 
