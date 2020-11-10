@@ -4,7 +4,7 @@ namespace OneFit\Events\Adapters;
 
 use AvroSchema;
 use Illuminate\Support\Facades\Cache;
-use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter as CacheAdapterInterface;
+use FlixTech\SchemaRegistryApi\Registry\CacheAdapter as CacheAdapterInterface;
 
 class CacheAdapter implements CacheAdapterInterface
 {
