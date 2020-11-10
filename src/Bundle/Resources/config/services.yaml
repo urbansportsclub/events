@@ -17,7 +17,7 @@ services:
     class: 'GuzzleHttp\Client'
     arguments:
       $config:
-        base_uri: "https://schema-registry.app.fit.ci/"
+        base_uri: "%env(SCHEMA_REGISTRY_URL)%"
 
   FlixTech\SchemaRegistryApi\Registry\PromisingRegistry:
     arguments:
