@@ -354,7 +354,6 @@ class ConsumerServiceTest extends TestCase
             ->with(120000)
             ->willReturn($this->kafkaMessageMock);
 
-
         $this->logger
             ->expects($this->once())
             ->method('critical')
