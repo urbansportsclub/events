@@ -45,6 +45,11 @@ class ConsumerServiceTest extends TestCase
     private $consumerService;
 
     /**
+     * @var Logger|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $logger;
+
+    /**
      * @return void
      */
     public function setUp(): void
@@ -68,9 +73,9 @@ class ConsumerServiceTest extends TestCase
             return $this->serializerMock;
         };
 
-        $logger = $this->createMock(Logger::class);
+        $this->logger = $this->createMock(Logger::class);
 
-        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock, $serializer, $schemas, $logger);
+        $this->consumerService = new ConsumerService($this->consumerMock, $this->messageMock, $serializer, $schemas, $this->logger);
     }
 
     /** @test */
@@ -334,5 +339,27 @@ class ConsumerServiceTest extends TestCase
         $response = $this->consumerService->consume(120000);
 
         $this->assertEquals($this->messageMock, $response);
+    }
+
+    /** @test */
+    public function log_critical_empty_messages()
+    {
+        Log::spy();
+        $this->kafkaMessageMock->topic_name = 'new-avro-topic';
+        $this->kafkaMessageMock->payload = '';
+
+        $this->consumerMock
+            ->expects($this->once())
+            ->method('consume')
+            ->with(120000)
+            ->willReturn($this->kafkaMessageMock);
+
+
+        $this->logger
+            ->expects($this->once())
+            ->method('critical')
+            ->with(sprintf('Empty message found in topic %s', $this->kafkaMessageMock->topic_name), ['message' => $this->kafkaMessageMock->payload]);
+
+        $response = $this->consumerService->consume(120000);
     }
 }
