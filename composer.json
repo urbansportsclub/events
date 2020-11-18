@@ -17,7 +17,7 @@
         "ext-pcntl": "^7.2",
         "ext-json": "^1.6 || ^7.4",
         "flix-tech/avro-serde-php": "^1.4",
-        "illuminate/support": "^5.8 || ^6.0",
+        "illuminate/support": "^5.8 || ^6.0 || ^7.0",
         "symfony/cache": "^5.1",
         "symfony/framework-bundle": "^5.1",
         "symfony/config": "^5.1",
