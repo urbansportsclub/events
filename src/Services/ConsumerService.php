@@ -140,6 +140,7 @@ class ConsumerService
 
         if (is_null($decodedJson)) {
             $this->logger->critical(sprintf('Empty message found in topic %s', $topic), ['message' => $message]);
+
             return [];
         }
 
