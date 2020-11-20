@@ -2,7 +2,7 @@
 Besides using the package to produce events in a generic way, this package also provides a way to manually produce and consume events using package services provided by service provider.
 
 ## Producing events
-Producing an event is quite simple. If you dive into implementation you will notice that `ProducerService` exposes `produce` and `flush` methods.
+If you dive into implementation you will notice that `ProducerService` exposes `produce` and `flush` methods.
 
 **Important:** Without proper shutdown, messages can get lost. It is a client responsibility to call flush periodically. This should typically be done prior to destroying a producer instance to make sure all queued and in-flight produce requests are completed before terminating.
 

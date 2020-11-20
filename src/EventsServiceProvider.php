@@ -216,7 +216,7 @@ class EventsServiceProvider extends ServiceProvider
      */
     private function configPath($path = ''): string
     {
-        return $this->app->make('path.config').($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->app->basePath().($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 
     /**
