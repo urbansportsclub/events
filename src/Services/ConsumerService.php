@@ -136,7 +136,15 @@ class ConsumerService
             return $this->decodeForSchema($message, $topic);
         }
 
-        return json_decode($message, true);
+        $decodedJson = json_decode($message, true);
+
+        if (is_null($decodedJson)) {
+            $this->logger->critical(sprintf('Empty message found in topic %s', $topic), ['message' => $message]);
+
+            return [];
+        }
+
+        return $decodedJson;
     }
 
     /**
