@@ -4,9 +4,9 @@ namespace OneFit\Events\Services;
 
 use Closure;
 use AvroSchema;
-use Monolog\Logger;
 use RdKafka\KafkaConsumer;
 use Illuminate\Support\Arr;
+use Psr\Log\LoggerInterface;
 use AvroSchemaParseException;
 use OneFit\Events\Models\Message;
 use RdKafka\Exception as RdKafkaException;
@@ -39,20 +39,20 @@ class ConsumerService
     private $schemas;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
 
     /**
      * ConsumerService constructor.
      *
-     * @param KafkaConsumer $consumer
-     * @param Message       $message
-     * @param Closure       $serializer
-     * @param array         $schemas
-     * @param Logger|null   $logger
+     * @param KafkaConsumer        $consumer
+     * @param Message              $message
+     * @param Closure              $serializer
+     * @param array                $schemas
+     * @param LoggerInterface|null $logger
      */
-    public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas, ?Logger $logger = null)
+    public function __construct(KafkaConsumer $consumer, Message $message, Closure $serializer, array $schemas, ?LoggerInterface $logger = null)
     {
         $this->consumer = $consumer;
         $this->message = $message;
