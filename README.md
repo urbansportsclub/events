@@ -60,7 +60,7 @@ The producers configuration is part of configuration where we are mapping our pr
 
 The structure is as follows ```domain_model => [ common_event_type => topic_name ]```
 
-If you dive into implementation, you will see that when initialising *EventServiceProvider*, for every *domain_model* specified inside of the producers configuration, we are registering generic observers to listen for the following events: *created*, *deleted*, *updated* for the given domain model. We are not going to explain laravel events, since this is something that a reader should already be aware of, but in case you would like to refresh your memory, please follow this [link](https://laravel.com/docs/5.8/eloquent#events).
+If you dive into implementation, you will see that when initialising *EventServiceProvider*, for every *domain_model* specified inside of the producers configuration, we are registering generic observers to listen for the following events: *created*, *deleted*, *updated* for the given domain model. We are not going to explain laravel events but in case you would like to read more, please follow this [link](https://laravel.com/docs/5.8/eloquent#events).
 
 One of the good things about this kind of behaviour is that these events, or more precisely observers registered to handle them, are non blocking, meaning that if the error occurs while producing an event, the initial process that caused the event will not be stopped, nor the data will be lost. For given configuration, every domain model specified will have a generic observer attached, which will listen the events mentioned above.
 
