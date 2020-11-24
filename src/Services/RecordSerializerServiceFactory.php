@@ -29,7 +29,7 @@ class RecordSerializerServiceFactory
     public static function create(): Closure
     {
         return function () {
-            new RecordSerializer(static::$registry);
+            return new RecordSerializer(static::$registry);
         };
     }
 }
