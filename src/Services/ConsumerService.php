@@ -165,6 +165,9 @@ class ConsumerService
         foreach ($mapping as $from => $to) {
             Arr::set($mapped, $from, Arr::get($items, $to));
         }
+        if (empty($mapped['type'])) {
+            $mapped['type'] = $topic;
+        }
 
         return $mapped;
     }
