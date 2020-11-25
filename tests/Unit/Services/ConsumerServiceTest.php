@@ -230,7 +230,7 @@ class ConsumerServiceTest extends TestCase
         $this->messageMock
             ->expects($this->once())
             ->method('hydrate')
-            ->with(['payload' => ['uuid' => 'event-uuid']])
+            ->with(['payload' => ['uuid' => 'event-uuid'], 'type' => 'my-avro-topic'])
             ->willReturn($this->messageMock);
 
         $response = $this->consumerService->consume(120000);
