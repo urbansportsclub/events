@@ -21,7 +21,7 @@
         "symfony/cache": "^5.1",
         "symfony/framework-bundle": "^5.1",
         "symfony/config": "^5.1",
-        "monolog/monolog": "^2.1",
+        "monolog/monolog": "^1.25 || ^2.1",
         "symfony/expression-language": "^5.1"
     },
     "require-dev": {
