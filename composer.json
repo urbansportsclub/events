@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "ext-rdkafka": "^4.0",
+        "ext-rdkafka": ">=4.0",
         "ext-pcntl": "^7.2",
         "ext-json": "^1.6 || ^7.4",
         "flix-tech/avro-serde-php": "^1.4",
